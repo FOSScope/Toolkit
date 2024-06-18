@@ -746,16 +746,11 @@ dependencies = [
 name = "fosscopetoolkit"
 version = "0.1.0-dev"
 dependencies = [
- "fosscopetoolkit-core",
  "serde",
  "serde_json",
  "tauri",
  "tauri-build",
 ]
-
-[[package]]
-name = "fosscopetoolkit-core"
-version = "0.1.0-dev"
 
 [[package]]
 name = "futf"

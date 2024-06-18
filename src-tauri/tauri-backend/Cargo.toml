@@ -1,0 +1,29 @@
+[package]
+name = "fosscopetoolkit"
+description = "为开源观察贡献者设计的工具箱"
+version = "0.1.0-dev"
+
+repository = "https://github.com/FOSScope/ToolKit"
+license = "AGPL-3.0"
+authors = [
+    "FOSSCope <fosscope@fosscope.org>",
+    "FOSSCope Contributors"
+]
+
+edition = "2021"
+readme = "README.md"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[build-dependencies]
+tauri-build = { version = "1", features = [] }
+
+[dependencies]
+fosscopetoolkit-core = { workspace = true }
+tauri = { version = "1", features = ["shell-open"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[features]
+# This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!
+custom-protocol = ["tauri/custom-protocol"]
