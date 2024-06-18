@@ -1,5 +1,5 @@
 [workspace]
-members = ["tauri-backend", "toolkit-core"]
+members = ["tauri-backend", "toolkit-cli", "toolkit-core"]
 
 [workspace.dependencies]
 fosscopetoolkit-core = { path = "toolkit-core" }
