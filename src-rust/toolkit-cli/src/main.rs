@@ -11,8 +11,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         // The proper config when in production
         .file("config/config.toml")
         .load()?;
-    println!("GitHub username: {}", config.github_username);
-    println!("GitHub token: {}", config.github_token);
+    println!("GitHub username: {}", config.github.username);
+    println!("GitHub token: {}", config.github.token);
+    println!("Upstream repo owner: {}", config.upstream_repo.owner);
+    println!("Upstream repo name: {}", config.upstream_repo.repo);
+    println!("Contributor repo owner: {}",
+             config.contributor_repo.owner.unwrap_or_else(|| config.github.username)
+    );
+    println!("Contributor repo name: {}",
+             config.contributor_repo.repo.unwrap_or_else(|| config.upstream_repo.repo)
+    );
 
     Ok(())
 }

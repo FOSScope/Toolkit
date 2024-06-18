@@ -1,4 +1,17 @@
+[github]
 # GitHub Username
-github_username = "username"
+username = "Cubik65536"
 # GitHub Token
-github_token = "token"
+token = "token"
+
+[upstream_repo]
+# Upstream Repository Owner
+owner = "owner"
+# Upstream Repository Name
+repo = "repo"
+
+[contributor_repo]
+# Contributor Repository Owner, by default it's the same as the GitHub Username
+# owner = "owner"
+# Contributor Repository Name, by default it's the same as the Upstream Repository Name
+# repo = "repo"
