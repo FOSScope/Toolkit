@@ -6,7 +6,7 @@
     "distDir": "../../dist"
   },
   "package": {
-    "productName": "FOSScope ToolKit",
+    "productName": "FOSScope Toolkit",
     "version": "0.1.0-dev"
   },
   "tauri": {
@@ -19,7 +19,7 @@
     },
     "windows": [
       {
-        "title": "FOSScope ToolKit",
+        "title": "FOSScope Toolkit",
         "width": 800,
         "height": 600
       }

@@ -3,7 +3,7 @@ name = "fosscopetoolkit-core"
 description = "为开源观察贡献者设计的工具箱"
 version = "0.1.0-dev"
 
-repository = "https://github.com/FOSScope/ToolKit"
+repository = "https://github.com/FOSScope/Toolkit"
 license = "AGPL-3.0"
 authors = [
     "FOSSCope <fosscope@fosscope.org>",
