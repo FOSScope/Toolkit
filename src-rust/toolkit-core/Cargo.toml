@@ -19,4 +19,6 @@ octocrab = "0.38.0" # GitHub API
 
 [dev-dependencies]
 serde = { version = "1", features = ["derive"] }
+serde_json = "1.0.117"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+wiremock = "0.6.0"

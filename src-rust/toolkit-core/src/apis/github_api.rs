@@ -6,10 +6,10 @@ pub struct GitHubApi {
 }
 
 impl GitHubApi {
-    pub fn new(username: String, token: String) -> Self {
+    pub fn new(username: String, octocrab: Octocrab) -> Self {
         Self {
             username,
-            octocrab: Octocrab::builder().personal_token(token).build().unwrap(),
+            octocrab,
         }
     }
 
