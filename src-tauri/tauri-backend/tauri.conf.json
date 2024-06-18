@@ -6,8 +6,8 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "fosscopetoolkit",
-    "version": "0.0.0"
+    "productName": "FOSScope ToolKit",
+    "version": "0.1.0-dev"
   },
   "tauri": {
     "allowlist": {
@@ -19,7 +19,7 @@
     },
     "windows": [
       {
-        "title": "fosscopetoolkit",
+        "title": "FOSScope ToolKit",
         "width": 800,
         "height": 600
       }
@@ -30,7 +30,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.tauri.dev",
+      "identifier": "org.fosscope.toolkit",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
