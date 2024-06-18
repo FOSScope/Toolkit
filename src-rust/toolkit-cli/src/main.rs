@@ -14,8 +14,5 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("GitHub username: {}", config.github_username);
     println!("GitHub token: {}", config.github_token);
 
-    let result = fosscopetoolkit_core::greet("Rust CLI");
-    println!("{}", result);
-
     Ok(())
 }

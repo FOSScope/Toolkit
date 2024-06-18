@@ -1,14 +1,23 @@
-pub fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from toolkit-core!", name)
-}
+mod apis;
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use confique::Config;
 
-    #[test]
-    fn it_works() {
-        let result = greet("world");
-        assert_eq!(result, "Hello, world! You've been greeted from toolkit-core!");
+    #[derive(Config)]
+    pub struct AppConfig {
+        pub github_username: String,
+        pub github_token: String,
+    }
+
+    use crate::apis::GitHubApi;
+
+    #[tokio::test]
+    async fn github_verify_user() {
+        let config = AppConfig::builder()
+            .file("config/cli.dev.toml")
+            .load().unwrap();
+        let github_api = GitHubApi::new(config.github_username, config.github_token);
+        assert!(github_api.verify_user().await);
     }
 }
