@@ -15,6 +15,33 @@ impl GitHubApi {
     }
 
     /**
+     * Get a list of all forks of the given repository.
+     */
+    pub async fn get_forks(&self, upstream: GitHubRepo) -> Vec<GitHubRepo> {
+        let mut forks = Vec::new();
+        let mut page: u32 = 1;
+        let mut continue_loop = true;
+        while continue_loop {
+            let response = self.octocrab.repos(
+                upstream.owner.clone(), upstream.name.clone()
+            ).list_forks().page(page).per_page(100).send().await.unwrap();
+
+            // If there's no next page, break out of the loop.
+            if response.next.is_none() {
+                continue_loop = false;
+            }
+
+            // Only include the owner and name of the forked repository.
+            forks.extend(response.into_iter().map(
+                |repo| GitHubRepo::new(repo.owner.unwrap().login, repo.name)
+            ));
+
+            page += 1;
+        }
+        forks
+    }
+
+    /**
      * Get the username (login) of the currently signed-in GitHub user.
      */
     async fn get_user(&self) -> String {
