@@ -1,4 +1,3 @@
-use std::ptr::null;
 use octocrab::Octocrab;
 use super::super::models::GitHubRepo;
 
@@ -33,10 +32,10 @@ impl GitHubApi {
     /**
      * Validate that the given repository exists and is a fork of the upstream repository.
      */
-    pub async fn validate_repo(&self, repo: GitHubRepo, upstream: GitHubRepo) -> Result<(), Err> {
+    pub async fn validate_repo(&self, repo: GitHubRepo, upstream: GitHubRepo) -> Result<(), &str> {
         if let Ok(repo) = self.octocrab.repos(repo.owner, repo.name).get().await {
-            if repo.fork {
-                if repo.parent.unwrap().full_name.unwrap_or_else(null) == upstream.get_full_name() {
+            if repo.fork.unwrap_or(false) {
+                if repo.parent.unwrap().full_name.unwrap() == upstream.get_full_name() {
                     Ok(())
                 } else {
                     Err("Repository is not a fork of the upstream repository")

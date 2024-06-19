@@ -40,30 +40,34 @@ fn setup_octocrab(uri: &str) -> Octocrab {
     Octocrab::builder().base_uri(uri).unwrap().build().unwrap()
 }
 
-#[tokio::test]
-async fn user_verify_successful() {
-    println!("Current directory: {:?}", std::env::current_dir().unwrap());
-    let mocked_response: UserProfile =
-        serde_json::from_str(include_str!("resources/user.json")).unwrap();
-    let template = ResponseTemplate::new(200).set_body_json(&mocked_response);
-    let mock_server = setup_api(template).await;
-    let client = setup_octocrab(&mock_server.uri());
-    // let client = Octocrab::builder().personal_token(token).build().unwrap();
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    let github = GitHubApi::new("octocat".to_string(), client);
-    // The username and the username from the mocked response should match.
-    assert!(github.verify_user().await);
-}
+    #[tokio::test]
+    async fn user_verify_successful() {
+        let mocked_response: UserProfile =
+            serde_json::from_str(include_str!("resources/user.json")).unwrap();
+        let template = ResponseTemplate::new(200).set_body_json(&mocked_response);
+        let mock_server = setup_api(template).await;
+        let client = setup_octocrab(&mock_server.uri());
+        // let client = Octocrab::builder().personal_token(token).build().unwrap();
 
-#[tokio::test]
-async fn user_verify_unsuccessful() {
-    let mocked_response: UserProfile =
-        serde_json::from_str(include_str!("resources/user.json")).unwrap();
-    let template = ResponseTemplate::new(200).set_body_json(&mocked_response);
-    let mock_server = setup_api(template).await;
-    let client = setup_octocrab(&mock_server.uri());
+        let github = GitHubApi::new("octocat".to_string(), client);
+        // The username and the username from the mocked response should match.
+        assert!(github.verify_user().await);
+    }
 
-    let github = GitHubApi::new("random-user-123".to_string(), client);
-    // The username and the username from the mocked response should NOT match.
-    assert!(!github.verify_user().await);
+    #[tokio::test]
+    async fn user_verify_unsuccessful() {
+        let mocked_response: UserProfile =
+            serde_json::from_str(include_str!("resources/user.json")).unwrap();
+        let template = ResponseTemplate::new(200).set_body_json(&mocked_response);
+        let mock_server = setup_api(template).await;
+        let client = setup_octocrab(&mock_server.uri());
+
+        let github = GitHubApi::new("random-user-123".to_string(), client);
+        // The username and the username from the mocked response should NOT match.
+        assert!(!github.verify_user().await);
+    }
 }
