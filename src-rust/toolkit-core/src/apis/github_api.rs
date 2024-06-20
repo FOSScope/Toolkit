@@ -28,7 +28,7 @@ impl GitHubApi {
             // Yes, this is a bit of a hacky way...
             // If you know a better way to do this, please let me know (or submit a PR)!
             // - Cubik
-            let next_page = &response.next;
+            let next_page = response.next.clone();
 
             // Only include the owner and name of the forked repository.
             forks.extend(response.into_iter().map(
