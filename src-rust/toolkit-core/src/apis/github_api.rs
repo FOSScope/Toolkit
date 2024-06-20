@@ -46,6 +46,19 @@ impl GitHubApi {
     }
 
     /**
+     * Get the fork of upstream repository that belongs to the currently signed in GitHub user.
+     */
+    pub async fn get_user_fork(&self, upstream: GitHubRepo) -> Result<GitHubRepo, &str> {
+        let forks = self.get_forks(upstream).await;
+        for fork in forks {
+            if fork.owner == self.username {
+                return Ok(fork);
+            }
+        }
+        Err("User has not forked the upstream repository.")
+    }
+
+    /**
      * Get the username (login) of the currently signed-in GitHub user.
      */
     async fn get_user(&self) -> String {
@@ -53,7 +66,7 @@ impl GitHubApi {
     }
 
     /**
-     * Verify that the username of the currently signed-in GitHub user matches the username
+     * Verify that the username of the currently signed in GitHub user matches the username
      * provided to the GitHubApi.
      */
     pub async fn verify_user(&self) -> bool {

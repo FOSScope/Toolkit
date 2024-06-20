@@ -63,4 +63,45 @@ mod tests {
 
         assert_eq!(result.len(), 30);
     }
+
+    #[tokio::test]
+    async fn user_dont_have_fork() {
+        let mocked_response: Vec<Repository> =
+            serde_json::from_str(include_str!("resources/repo_forks.json")).unwrap();
+        let template = ResponseTemplate::new(200).set_body_json(&mocked_response);
+        let mock_server = setup_api(template).await;
+        let client = setup_octocrab(&mock_server.uri());
+
+        let github = GitHubApi::new("octocat".to_string(), client);
+        let result = github.get_user_fork(
+            GitHubRepo {
+                owner: "octocat".to_string(),
+                name: "Hello-World".to_string(),
+            }
+        ).await;
+
+        assert_eq!(result, Err("User has not forked the upstream repository."));
+    }
+
+    #[tokio::test]
+    async fn user_has_fork() {
+        let mocked_response: Vec<Repository> =
+            serde_json::from_str(include_str!("resources/repo_forks.json")).unwrap();
+        let template = ResponseTemplate::new(200).set_body_json(&mocked_response);
+        let mock_server = setup_api(template).await;
+        let client = setup_octocrab(&mock_server.uri());
+
+        let github = GitHubApi::new("FOSScope".to_string(), client);
+        let result = github.get_user_fork(
+            GitHubRepo {
+                owner: "octocat".to_string(),
+                name: "Hello-World".to_string(),
+            }
+        ).await;
+
+        assert_eq!(result, Ok(GitHubRepo {
+            owner: "FOSScope".to_string(),
+            name: "Hello-World".to_string(),
+        }));
+    }
 }
