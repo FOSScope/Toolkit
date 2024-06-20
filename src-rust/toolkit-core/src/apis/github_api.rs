@@ -20,21 +20,25 @@ impl GitHubApi {
     pub async fn get_forks(&self, upstream: GitHubRepo) -> Vec<GitHubRepo> {
         let mut forks = Vec::new();
         let mut page: u32 = 1;
-        let mut continue_loop = true;
-        while continue_loop {
+        loop {
             let response = self.octocrab.repos(
                 upstream.owner.clone(), upstream.name.clone()
             ).list_forks().page(page).per_page(100).send().await.unwrap();
 
-            // If there's no next page, break out of the loop.
-            if response.next.is_none() {
-                continue_loop = false;
-            }
+            // Yes, this is a bit of a hacky way...
+            // If you know a better way to do this, please let me know (or submit a PR)!
+            // - Cubik
+            let next_page = &response.next;
 
             // Only include the owner and name of the forked repository.
             forks.extend(response.into_iter().map(
                 |repo| GitHubRepo::new(repo.owner.unwrap().login, repo.name)
             ));
+
+            // If there's no next page, break out of the loop.
+            if next_page.is_none() {
+                break
+            }
 
             page += 1;
         }
