@@ -846,7 +846,9 @@ version = "0.1.0-dev"
 dependencies = [
  "confique",
  "fosscopetoolkit-core",
+ "octocrab",
  "serde",
+ "tokio",
 ]
 
 [[package]]

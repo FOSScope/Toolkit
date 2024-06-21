@@ -17,3 +17,5 @@ readme = "README.md"
 fosscopetoolkit-core = { workspace = true }
 serde = { version = "1", features = ["derive"] }
 confique = "0.2.5" # Congifuration file parser
+octocrab = "0.38.0" # GitHub API client
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
