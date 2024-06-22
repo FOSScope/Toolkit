@@ -1,7 +1,7 @@
 use std::io::{stdin, stdout, Write};
+
 use confique::Config;
 use octocrab::Octocrab;
-use serde_json::json;
 
 use config::AppConfig;
 use fosscopetoolkit_core::apis::GitHubApi;
