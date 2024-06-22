@@ -6,37 +6,9 @@ use serde_json::json;
 use config::AppConfig;
 use fosscopetoolkit_core::apis::GitHubApi;
 use fosscopetoolkit_core::models::GitHubRepo;
+use fosscopetoolkit_core::set_contributor_repo;
 
 mod config;
-
-/**
- * Set the contributor repository to the given repository.
- */
-// TODO: Move this into core.
-async fn set_contributor_repo(repo: GitHubRepo) {
-    println!("Setting the contributor repository to: {}", repo.get_full_name());
-    let contributor_repo = json!({
-        "owner": repo.owner,
-        "name": repo.name
-    });
-
-    let json_str = serde_json::to_string(&contributor_repo);
-    match json_str {
-        Ok(json_str) => {
-            // Write to the runtime storage file.
-            // If the directory does not exist, create it.
-            std::fs::create_dir_all(".fosscope_toolkit").unwrap();
-            let mut file = std::fs::File::create(
-                ".fosscope_toolkit/contributor_repo.json"
-            ).unwrap();
-            file.write_all(json_str.as_bytes()).unwrap();
-        }
-        Err(_) => {
-            eprintln!("Failed to set the contributor repository.");
-            std::process::exit(1);
-        }
-    }
-}
 
 /**
   * The process of automatically creating a forked repository or using an existing forked repository.
@@ -88,7 +60,7 @@ async fn fork_creation_process(github: &GitHubApi, upstream_repo: &GitHubRepo) -
                     stdin().read_line(&mut user_input).unwrap_or(0);
                     match user_input.to_lowercase().trim() {
                         "y" | "yes" => {
-                            set_contributor_repo(fork_repo).await;
+                            set_contributor_repo(fork_repo);
                             return true;
                         }
                         _ => {
@@ -105,7 +77,7 @@ async fn fork_creation_process(github: &GitHubApi, upstream_repo: &GitHubRepo) -
                     match fork {
                         Ok(fork) => {
                             println!("Forked repository created successfully: {}", fork.get_full_name());
-                            set_contributor_repo(fork).await;
+                            set_contributor_repo(fork);
                             return true;
                         }
                         Err(_) => {
@@ -155,7 +127,7 @@ async fn fork_check(github: &GitHubApi, upstream_repo: GitHubRepo) {
             stdin().read_line(&mut user_input).unwrap_or(0);
             match user_input.to_lowercase().trim() {
                 "y" | "yes" => {
-                    set_contributor_repo(fork).await;
+                    set_contributor_repo(fork);
                 }
                 _ => {
                     create_fork(github, upstream_repo).await;
