@@ -20,11 +20,7 @@ async fn set_contributor_repo(repo: GitHubRepo) {
  * Automatically fork the upstream repository or use another forked repository.
  */
 async fn create_fork(github: &GitHubApi, upstream_repo: GitHubRepo) {
-    print!(
-        "You do not have a fork of the upstream repository: {}.\
-        Do you want to use another fork or create a new fork? (y/n) ",
-        upstream_repo.get_full_name()
-    );
+    print!("Do you want to use another fork or create a new fork? (y/n) ");
     let mut user_input = String::new();
     let _= stdout().flush();
     stdin().read_line(&mut user_input).unwrap_or(0);
