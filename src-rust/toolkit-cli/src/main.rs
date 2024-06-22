@@ -17,9 +17,11 @@ async fn set_contributor_repo(repo: GitHubRepo) {
 }
 
 /**
- * Automatically fork the upstream repository or use another forked repository.
- */
-async fn create_fork(github: &GitHubApi, upstream_repo: GitHubRepo) {
+  * The process of automatically creating a forked repository or using an existing forked repository.
+  * Returns true if a forked repository is created or an existing forked repository is used.
+  * Returns false if this process needs to be repeated.
+  */
+async fn fork_creation_process(github: &GitHubApi, upstream_repo: &GitHubRepo) -> bool {
     print!("Do you want to use another fork or create a new fork? (y/n) ");
     let mut user_input = String::new();
     let _= stdout().flush();
@@ -65,10 +67,11 @@ async fn create_fork(github: &GitHubApi, upstream_repo: GitHubRepo) {
                     match user_input.to_lowercase().trim() {
                         "y" | "yes" => {
                             set_contributor_repo(fork_repo).await;
+                            return true;
                         }
                         _ => {
                             // Ask the user to provide a new owner/repository name.
-                            // How do I write this damn thing?
+                            return false;
                         }
                     }
                 }
@@ -81,6 +84,7 @@ async fn create_fork(github: &GitHubApi, upstream_repo: GitHubRepo) {
                         Ok(fork) => {
                             println!("Forked repository created successfully: {}", fork.get_full_name());
                             set_contributor_repo(fork).await;
+                            return true;
                         }
                         Err(_) => {
                             eprintln!("Failed to create the forked repository.");
@@ -91,13 +95,25 @@ async fn create_fork(github: &GitHubApi, upstream_repo: GitHubRepo) {
                 Err(_) => {
                     // The repo either is not a fork or is not a fork of the upstream repository.
                     // Ask the user to provide a new owner/repository name.
-                    // How do I write this damn thing?
+                    return false;
                 }
             }
         }
         _ => {
             println!("You should use a fork of the upstream repository to contribute. Exiting...");
             std::process::exit(0);
+        }
+    }
+}
+
+/**
+ * Automatically fork the upstream repository or use another forked repository.
+ */
+async fn create_fork(github: &GitHubApi, upstream_repo: GitHubRepo) {
+    loop {
+        let result = fork_creation_process(github, &upstream_repo).await;
+        if result {
+            break;
         }
     }
 }
