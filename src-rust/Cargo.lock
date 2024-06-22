@@ -848,6 +848,7 @@ dependencies = [
  "fosscopetoolkit-core",
  "octocrab",
  "serde",
+ "serde_json",
  "tokio",
 ]
 

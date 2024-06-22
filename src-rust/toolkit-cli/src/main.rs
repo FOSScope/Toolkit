@@ -1,6 +1,7 @@
 use std::io::{stdin, stdout, Write};
 use confique::Config;
 use octocrab::Octocrab;
+use serde_json::json;
 
 use config::AppConfig;
 use fosscopetoolkit_core::apis::GitHubApi;
@@ -13,7 +14,27 @@ mod config;
  */
 async fn set_contributor_repo(repo: GitHubRepo) {
     println!("Setting the contributor repository to: {}", repo.get_full_name());
-    // TODO: Really set the contributor repository
+    let contributor_repo = json!({
+        "owner": repo.owner,
+        "name": repo.name
+    });
+
+    let json_str = serde_json::to_string(&contributor_repo);
+    match json_str {
+        Ok(json_str) => {
+            // Write to the runtime storage file.
+            // If the directory does not exist, create it.
+            std::fs::create_dir_all(".fosscope_toolkit").unwrap();
+            let mut file = std::fs::File::create(
+                ".fosscope_toolkit/contributor_repo.json"
+            ).unwrap();
+            file.write_all(json_str.as_bytes()).unwrap();
+        }
+        Err(_) => {
+            eprintln!("Failed to set the contributor repository.");
+            std::process::exit(1);
+        }
+    }
 }
 
 /**
