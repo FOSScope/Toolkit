@@ -41,15 +41,59 @@ async fn create_fork(github: &GitHubApi, upstream_repo: GitHubRepo) {
             if fork_owner.is_empty() {
                 fork_owner = owner;
             }
-            let repo = upstream_repo.name;
-            println!("Please enter the name of the forked repository (default: {}):", repo);
-            let mut fork_repo = String::new();
-            stdin().read_line(&mut fork_repo).unwrap_or(0);
-            fork_repo = fork_repo.trim().to_string();
-            if fork_repo.is_empty() {
-                fork_repo = repo;
+            let repo_name = upstream_repo.clone().name;
+            println!("Please enter the name of the forked repository (default: {}):", repo_name);
+            let mut fork_repo_name = String::new();
+            stdin().read_line(&mut fork_repo_name).unwrap_or(0);
+            fork_repo_name = fork_repo_name.trim().to_string();
+            if fork_repo_name.is_empty() {
+                fork_repo_name = repo_name;
             }
-            println!("Creating a fork with the owner: {} and the repository name: {}", fork_owner, fork_repo);
+            println!("Creating a fork with the owner: {} and the repository name: {}", fork_owner, fork_repo_name);
+            let fork_repo = GitHubRepo::new(fork_owner, fork_repo_name);
+
+            // Check if the forked repository exists.
+            let fork_exists = github.validate_repo(fork_repo.clone(), upstream_repo.clone()).await;
+            match fork_exists {
+                Ok(_) => {
+                    // Ask the user if they want to use the forked repository.
+                    println!("The repo {} is a fork of the upstream repository.", fork_repo.get_full_name());
+                    print!("Do you want to use this forked repository as the contributor repository? (y/n) ");
+                    let mut user_input = String::new();
+                    let _= stdout().flush();
+                    stdin().read_line(&mut user_input).unwrap_or(0);
+                    match user_input.to_lowercase().trim() {
+                        "y" | "yes" => {
+                            set_contributor_repo(fork_repo).await;
+                        }
+                        _ => {
+                            // Ask the user to provide a new owner/repository name.
+                            // How do I write this damn thing?
+                        }
+                    }
+                }
+                Err("Repository does not exist") => {
+                    // Create a new forked repository and use it as the contributor repository.
+                    let fork = github.create_fork(
+                        fork_repo.clone(), upstream_repo.clone()
+                    ).await;
+                    match fork {
+                        Ok(fork) => {
+                            println!("Forked repository created successfully: {}", fork.get_full_name());
+                            set_contributor_repo(fork).await;
+                        }
+                        Err(_) => {
+                            eprintln!("Failed to create the forked repository.");
+                            std::process::exit(1);
+                        }
+                    }
+                }
+                Err(_) => {
+                    // The repo either is not a fork or is not a fork of the upstream repository.
+                    // Ask the user to provide a new owner/repository name.
+                    // How do I write this damn thing?
+                }
+            }
         }
         _ => {
             println!("You should use a fork of the upstream repository to contribute. Exiting...");
