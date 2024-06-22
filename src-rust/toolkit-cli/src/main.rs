@@ -12,6 +12,7 @@ mod config;
 /**
  * Set the contributor repository to the given repository.
  */
+// TODO: Move this into core.
 async fn set_contributor_repo(repo: GitHubRepo) {
     println!("Setting the contributor repository to: {}", repo.get_full_name());
     let contributor_repo = json!({
