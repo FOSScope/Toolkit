@@ -1,8 +1,6 @@
 mod mock_error;
 
 use mock_error::setup_error_handler;
-use fosscopetoolkit_core::apis::GitHubApi;
-use fosscopetoolkit_core::models::GitHubRepo;
 use octocrab::models::{Repository};
 use octocrab::{Octocrab};
 use serde::{Deserialize, Serialize};
@@ -48,8 +46,8 @@ async fn setup_api(template: ResponseTemplate, request_type: RequestType) -> Moc
     setup_error_handler(
         &mock_server,
         &format!("GET on {mocked_path} was not received"),
-    )
-    .await;
+    ).await;
+
     mock_server
 }
 
@@ -60,6 +58,8 @@ fn setup_octocrab(uri: &str) -> Octocrab {
 
 #[cfg(test)]
 mod tests {
+    use fosscopetoolkit_core::apis::GitHubApi;
+    use fosscopetoolkit_core::models::GitHubRepo;
     use super::*;
 
     #[tokio::test]
