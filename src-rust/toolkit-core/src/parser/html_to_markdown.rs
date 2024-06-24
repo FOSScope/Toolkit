@@ -15,5 +15,14 @@ async fn get_html(url: &str) -> Result<String, Box<dyn std::error::Error>> {
  */
 pub async fn html_to_markdown(url: &str) -> Result<String, Box<dyn std::error::Error>> {
     let html = get_html(url).await?;
-    Ok(mdka::from_html(&html).trim().to_string())
+
+    // We go through the html content line by line and trim the lines.
+    // And then we convert the trimmed html content to markdown.
+    let mut content = String::new();
+    for line in html.lines() {
+        content.push_str(line.trim());
+        content.push('\n');
+    }
+
+    Ok(mdka::from_html(&content).trim().to_string())
 }

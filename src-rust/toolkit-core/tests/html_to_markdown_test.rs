@@ -73,6 +73,28 @@ mod tests {
                         }
                         </code>
                     </pre>
+                    <ul>
+                        <li>Item 1</li>
+                        <li>
+                            Item 2
+                            <ul>
+                                <li>Item 2.1</li>
+                                <li>Item 2.2</li>
+                            </ul>
+                        </li>
+                        <li>Item 3</li>
+                    </ul>
+                    <ol type="I">
+                        <li>Item 1</li>
+                        <li>
+                            Item 2
+                            <ul>
+                                <li>Item 2.1</li>
+                                <li>Item 2.2</li>
+                            </ul>
+                        </li>
+                        <li>Item 3</li>
+                    </ol>
                 </body>
             </html>
             "#,
