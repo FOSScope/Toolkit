@@ -8,3 +8,6 @@
 
 # Configuration file
 .fosscope_toolkit/
+
+# Test Output
+output.md

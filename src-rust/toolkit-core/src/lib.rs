@@ -4,6 +4,7 @@ use crate::models::GitHubRepo;
 
 pub mod apis;
 pub mod models;
+pub mod parser;
 
 /**
  * Set the contributor repository to the given repository.
