@@ -14,12 +14,12 @@ edition = "2021"
 readme = "README.md"
 
 [dependencies]
-git2 = "0.19.0" # Git
+tokio = { version = "1", features = ["full"] } # Async Runtime
+serde = { version = "1", features = ["derive"] } # Serialization
+serde_json = "1.0.117" # JSON Serialization
+reqwest = { version = "0.12", features = ["json"] } # HTTP Client
 octocrab = "0.38.0" # GitHub API
-serde = { version = "1", features = ["derive"] }
-serde_json = "1.0.117"
 mdka = "1.2.7" # HTML to Markdown
 
 [dev-dependencies]
-tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 wiremock = "0.6.0"
