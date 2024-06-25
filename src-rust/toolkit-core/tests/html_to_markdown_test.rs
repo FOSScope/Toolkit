@@ -61,6 +61,7 @@ mod tests {
                 </head>
                 <body>
                     <h1>Simple HTML</h1>
+                    <h6>Header 6</h6>
                     <p>This is a simple HTML page.</p>
                     <blockquote>
                         This is a blockquote.

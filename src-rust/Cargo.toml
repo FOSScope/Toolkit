@@ -3,3 +3,4 @@ members = ["tauri-backend", "toolkit-cli", "toolkit-core"]
 
 [workspace.dependencies]
 fosscopetoolkit-core = { path = "toolkit-core" }
+html2md = { git = "https://github.com/FOSScope/html2md.git", rev = "47b8a62a90737bc45fa3f13a906be6367fa45fea" }

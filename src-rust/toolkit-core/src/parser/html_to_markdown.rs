@@ -35,5 +35,5 @@ pub async fn html_to_markdown(url: &str) -> Result<String, Box<dyn std::error::E
         content.push('\n');
     }
 
-    Ok(mdka::from_html(&content).trim().to_string())
+    Ok(html2md::parse_html(&content).trim().to_string())
 }

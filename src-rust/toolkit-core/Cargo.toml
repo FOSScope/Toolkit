@@ -20,7 +20,7 @@ serde_json = "1.0.117" # JSON Serialization
 regex = "1.10.5" # Regular Expression
 reqwest = { version = "0.12", features = ["json"] } # HTTP Client
 octocrab = "0.38.0" # GitHub API
-mdka = "1.2.7" # HTML to Markdown
+html2md = { workspace = true } # HTML to Markdown
 
 [dev-dependencies]
 wiremock = "0.6.0"
