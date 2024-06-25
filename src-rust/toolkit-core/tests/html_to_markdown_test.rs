@@ -112,4 +112,17 @@ mod tests {
         // forgive me because I need to know the output of the markdown conversion.
         assert!(true);
     }
+
+    #[tokio::test]
+    async fn site_to_markdown_file() {
+        let markdown = html_to_markdown("https://news.itsfoss.com/lindroid/").await;
+
+        // Write the markdown to a file for debugging
+        use std::fs;
+        fs::write("output.md", markdown.unwrap()).expect("Unable to write file");
+
+        // Yes I know this is not the right way of writing tests, but
+        // forgive me because I need to know the output of the markdown conversion.
+        assert!(true);
+    }
 }
