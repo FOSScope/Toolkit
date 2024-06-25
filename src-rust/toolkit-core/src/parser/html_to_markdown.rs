@@ -1,3 +1,5 @@
+use regex::Regex;
+
 /**
   * Get the HTML source content from the given URL.
   */
@@ -6,7 +8,16 @@ async fn get_html(url: &str) -> Result<String, Box<dyn std::error::Error>> {
     if !client.status().is_success() {
         return Err("Failed to get the HTML content".into());
     }
-    Ok(client.text().await?)
+
+    let text = client.text().await?;
+
+    // Get only content between <body> and </body> tags
+    let body_start_regex = Regex::new(r#"<body[^>]*>"#).unwrap();
+    let body_start_tag = body_start_regex.find(&text).unwrap();
+    let body_start = body_start_tag.end();
+    let body_end = text.find("</body>").unwrap();
+
+    Ok(text[body_start..body_end].to_string())
 }
 
 /**
