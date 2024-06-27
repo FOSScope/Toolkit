@@ -7,8 +7,10 @@ use config::AppConfig;
 use fosscopetoolkit_core::apis::GitHubApi;
 use fosscopetoolkit_core::models::GitHubRepo;
 use fosscopetoolkit_core::set_contributor_repo;
+use crate::workflow::select;
 
 mod config;
+mod workflow;
 
 /**
   * The process of automatically creating a forked repository or using an existing forked repository.
@@ -196,4 +198,34 @@ async fn main() {
     }
 
     fork_check(&github, upstream_repo).await;
+
+    println!(
+        r#"请选择当前要进行的贡献
+        1. 选题
+        2. 翻译
+        3. 校对
+        4. 发布"#
+    );
+
+    let mut user_input = String::new();
+    let mut valid_input = false;
+    while !valid_input {
+        stdin().read_line(&mut user_input).unwrap_or(0);
+        match user_input.trim() {
+            "1" => {
+                valid_input = true;
+                select().await;
+            }
+            "2" | "3" | "4" => {
+                eprintln!("Not implemented yet.");
+                user_input.clear();
+                continue;
+            }
+            _ => {
+                user_input.clear();
+                eprintln!("Invalid input. Please select an option from the list.");
+                continue;
+            }
+        }
+    }
 }

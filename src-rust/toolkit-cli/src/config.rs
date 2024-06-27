@@ -2,6 +2,7 @@ use confique::Config;
 
 #[derive(Config)]
 pub struct AppConfig {
+    pub editor: String,
     #[config(nested)]
     pub github: GitHubConfig,
 }
