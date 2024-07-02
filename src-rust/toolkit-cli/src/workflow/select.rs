@@ -42,6 +42,12 @@ pub async fn select() {
                 .arg(path_to_file)
                 .status()
                 .expect("无法打开编辑器");
+            // We would not be able to detect the program's exit status if it is
+            // a program that only uses the terminal to launch the editor.
+            // e.g. Visual Studio Code.
+
+            println!("如果您已经完成了编辑，请输入任何内容以继续。");
+            let _= stdin().read_line(&mut String::new());
         }
         Err(e) => {
             eprintln!("Markdown 转换失败：{}", e);
