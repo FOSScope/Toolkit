@@ -1,16 +1,14 @@
 use std::io::{stdin, stdout, Write};
 
-use confique::Config;
-use octocrab::Octocrab;
-
-use config::AppConfig;
 use fosscopetoolkit_core::apis::GitHubApi;
 use fosscopetoolkit_core::models::GitHubRepo;
 use fosscopetoolkit_core::set_contributor_repo;
+use crate::github::GitHubAccount;
 use crate::workflow::select;
 
 mod config;
 mod workflow;
+mod github;
 
 /**
   * The process of automatically creating a forked repository or using an existing forked repository.
@@ -24,14 +22,7 @@ async fn fork_creation_process(github: &GitHubApi, upstream_repo: &GitHubRepo) -
     stdin().read_line(&mut user_input).unwrap_or(0);
     match user_input.to_lowercase().trim() {
         "y" | "yes" => {
-            let config = AppConfig::builder()
-                // Used to get the GitHub username and token while developing and testing the CLI
-                .file("config/cli.dev.toml")
-                // The proper config when in production
-                .file("config/config.toml")
-                .load()
-                .expect("Failed to load the configuration file.");
-            let owner = config.github.username;
+            let owner = github.get_username();
             println!("Please enter the name of the owner of the forked repository (default: {}):", owner);
             let mut fork_owner = String::new();
             stdin().read_line(&mut fork_owner).unwrap_or(0);
@@ -143,28 +134,76 @@ async fn fork_check(github: &GitHubApi, upstream_repo: GitHubRepo) {
     }
 }
 
+async fn login() -> GitHubApi {
+    let file_path = std::path::Path::new(".fosscope_toolkit/github_account.json");
+    if file_path.exists() {
+        let file = std::fs::File::open(file_path);
+        match file {
+            Ok(file) => {
+                let reader = std::io::BufReader::new(file);
+                let github_account: GitHubAccount = serde_json::from_reader(reader).unwrap();
+                let github = github_account.login().await;
+                match github {
+                    Ok(github) => {
+                        return github;
+                    }
+                    Err(e) => {
+                        eprintln!("{}", e);
+                        std::process::exit(1);
+                    }
+                }
+            }
+            Err(_) => {
+                eprintln!("Failed to read the GitHub account file.");
+                std::process::exit(1);
+            }
+        }
+    } else {
+        loop {
+            let mut user_input = String::new();
+            user_input.clear();
+            print!("Please enter your GitHub username: ");
+            let _= stdout().flush();
+            stdin().read_line(&mut user_input).unwrap_or(0);
+            let username = user_input.trim().to_string();
+            user_input.clear();
+            print!("Please enter your GitHub personal access token: ");
+            let _= stdout().flush();
+            stdin().read_line(&mut user_input).unwrap_or(0);
+            let token = user_input.trim().to_string();
+            let github_account = GitHubAccount::new(username, token);
+            let github = github_account.login().await;
+            match github {
+                Ok(github) => {
+                    let json_str = serde_json::to_string(&github_account);
+                    match json_str {
+                        Ok(json_str) => {
+                            std::fs::create_dir_all(".fosscope_toolkit").unwrap();
+                            let mut file = std::fs::File::create(
+                                ".fosscope_toolkit/github_account.json"
+                            ).unwrap();
+                            file.write_all(json_str.as_bytes()).unwrap();
+                            return github;
+                        }
+                        Err(_) => {
+                            eprintln!("Failed to save the GitHub account.");
+                            std::process::exit(1);
+                        }
+                    }
+                }
+                Err(e) => {
+                    eprintln!("{}", e);
+                    eprintln!("Please try again.");
+                    continue;
+                }
+            }
+        }
+    }
+}
+
 #[tokio::main]
 async fn main() {
-    let config = AppConfig::builder()
-        // Used to get the GitHub username and token while developing and testing the CLI
-        .file("config/cli.dev.toml")
-        // The proper config when in production
-        .file("config/config.toml")
-        .load()
-        .expect("Failed to load the configuration file.");
-
-    let octocrab = Octocrab::builder().personal_token(
-        config.github.token
-    ).build().unwrap();
-
-    let github = GitHubApi::new(
-        config.github.username,
-        octocrab
-    );
-    if !github.verify_user().await {
-        eprintln!("Failed to verify the GitHub user.");
-        std::process::exit(1);
-    }
+    let github = login().await;
 
     println!("Please select the upstream repository you want to work with:");
     println!("1. FOSScope/Articles - 开源观察原创文章与中文转载文章源文件");

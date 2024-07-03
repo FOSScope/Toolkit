@@ -16,11 +16,24 @@ impl GitHubApi {
         }
     }
 
+    pub fn get_username(&self) -> String {
+        self.username.clone()
+    }
+
     /**
      * Get the username (login) of the currently signed-in GitHub user.
      */
-    async fn get_user(&self) -> String {
-        self.octocrab.current().user().await.unwrap().login
+    async fn get_user(&self) -> Result<String, &str>{
+        let user = self.octocrab.current().user().await;
+        match user {
+            Ok(user) => Ok(user.login),
+            Err(_) => {
+                Err(
+                    "Failed to get the username of the currently signed in GitHub user.\
+                    Coule be due to an invalid token."
+                )
+            },
+        }
     }
 
     /**
@@ -28,7 +41,13 @@ impl GitHubApi {
      * provided to the GitHubApi.
      */
     pub async fn verify_user(&self) -> bool {
-        self.username == self.get_user().await
+        let user = self.get_user().await;
+        match user {
+            Ok(user) => {
+                user == self.username
+            },
+            Err(_) => false,
+        }
     }
 
     /**
