@@ -1,5 +1,4 @@
 use std::io::Write;
-use serde_json::json;
 use crate::models::GitHubRepo;
 
 pub mod apis;
@@ -11,12 +10,8 @@ pub mod parser;
  */
 pub fn set_contributor_repo(repo: GitHubRepo) {
     println!("Setting the contributor repository to: {}", repo.get_full_name());
-    let contributor_repo = json!({
-        "owner": repo.owner,
-        "name": repo.name
-    });
 
-    let json_str = serde_json::to_string(&contributor_repo);
+    let json_str = serde_json::to_string(&repo);
     match json_str {
         Ok(json_str) => {
             // Write to the runtime storage file.
