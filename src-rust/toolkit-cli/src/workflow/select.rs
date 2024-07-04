@@ -1,12 +1,14 @@
 use std::io::{stdin, stdout, Write};
-use confique::Config;
 
 use fosscopetoolkit_core::parser::html_to_markdown;
+use crate::config::get_config;
 
 /**
  * Workflow for selecting new articles to translate.
  */
 pub async fn select() {
+    let config = get_config();
+
     println!("欢迎参与开源观察翻译项目！");
     print!("请输入要选题的文章的 URL：");
     let _= stdout().flush();

@@ -3,11 +3,12 @@ use std::io::{stdin, stdout, Write};
 use fosscopetoolkit_core::apis::GitHubApi;
 use fosscopetoolkit_core::models::GitHubRepo;
 use fosscopetoolkit_core::set_contributor_repo;
-use crate::github::GitHubAccount;
+use config::github::GitHubAccount;
+use crate::config::initial_configuration_process;
 use crate::workflow::select;
 
 mod workflow;
-mod github;
+mod config;
 
 /**
   * The process of automatically creating a forked repository or using an existing forked repository.
@@ -202,6 +203,8 @@ async fn login() -> GitHubApi {
 
 #[tokio::main]
 async fn main() {
+    let _= initial_configuration_process();
+
     let github = login().await;
 
     println!("Please select the upstream repository you want to work with:");
