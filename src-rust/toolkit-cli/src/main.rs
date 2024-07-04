@@ -2,7 +2,7 @@ use std::io::{stdin, stdout, Write};
 
 use fosscopetoolkit_core::apis::GitHubApi;
 use fosscopetoolkit_core::models::GitHubRepo;
-use fosscopetoolkit_core::set_contributor_repo;
+use fosscopetoolkit_core::{get_contributor_repo, set_contributor_repo};
 use config::github::GitHubAccount;
 use crate::config::initial_configuration_process;
 use crate::workflow::select;
@@ -238,7 +238,9 @@ async fn main() {
         std::process::exit(1);
     }
 
-    fork_check(&github, upstream_repo).await;
+    if get_contributor_repo(&upstream_repo).is_none() {
+        fork_check(&github, upstream_repo).await;
+    }
 
     println!(
         r#"请选择当前要进行的贡献

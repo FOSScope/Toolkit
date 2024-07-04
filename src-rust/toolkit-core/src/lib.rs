@@ -35,10 +35,14 @@ pub fn set_contributor_repo(repo: GitHubRepo, upstream: &GitHubRepo) {
  * Get the contributor repository from the runtime storage.
  */
 pub fn get_contributor_repo(upstream: &GitHubRepo) -> Option<GitHubRepo> {
-    let path = format!(
+    let path_str = format!(
         ".fosscope_toolkit/contributor_repo_{}_{}.json",
         upstream.owner, upstream.name
     );
+    let path = std::path::Path::new(&path_str);
+    if !path.exists() {
+        return None;
+    }
     let file = std::fs::File::open(path);
     match file {
         Ok(file) => {
