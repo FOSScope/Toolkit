@@ -53,7 +53,7 @@ async fn fork_creation_process(github: &GitHubApi, upstream_repo: &GitHubRepo) -
                     stdin().read_line(&mut user_input).unwrap_or(0);
                     match user_input.to_lowercase().trim() {
                         "y" | "yes" => {
-                            set_contributor_repo(fork_repo);
+                            set_contributor_repo(fork_repo, upstream_repo);
                             return true;
                         }
                         _ => {
@@ -70,7 +70,7 @@ async fn fork_creation_process(github: &GitHubApi, upstream_repo: &GitHubRepo) -
                     match fork {
                         Ok(fork) => {
                             println!("Forked repository created successfully: {}", fork.get_full_name());
-                            set_contributor_repo(fork);
+                            set_contributor_repo(fork, upstream_repo);
                             return true;
                         }
                         Err(_) => {
@@ -120,7 +120,7 @@ async fn fork_check(github: &GitHubApi, upstream_repo: GitHubRepo) {
             stdin().read_line(&mut user_input).unwrap_or(0);
             match user_input.to_lowercase().trim() {
                 "y" | "yes" => {
-                    set_contributor_repo(fork);
+                    set_contributor_repo(fork, &upstream_repo);
                 }
                 _ => {
                     create_fork(github, upstream_repo).await;

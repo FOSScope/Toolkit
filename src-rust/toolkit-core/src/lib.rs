@@ -8,7 +8,7 @@ pub mod parser;
 /**
  * Set the contributor repository to the given repository.
  */
-pub fn set_contributor_repo(repo: GitHubRepo) {
+pub fn set_contributor_repo(repo: GitHubRepo, upstream: &GitHubRepo) {
     println!("Setting the contributor repository to: {}", repo.get_full_name());
 
     let json_str = serde_json::to_string(&repo);
@@ -17,9 +17,11 @@ pub fn set_contributor_repo(repo: GitHubRepo) {
             // Write to the runtime storage file.
             // If the directory does not exist, create it.
             std::fs::create_dir_all(".fosscope_toolkit").unwrap();
-            let mut file = std::fs::File::create(
-                ".fosscope_toolkit/contributor_repo.json"
-            ).unwrap();
+            let path = format!(
+                ".fosscope_toolkit/contributor_repo_{}_{}.json",
+                upstream.owner, upstream.name
+            );
+            let mut file = std::fs::File::create(path).unwrap();
             file.write_all(json_str.as_bytes()).unwrap();
         }
         Err(_) => {
@@ -32,8 +34,12 @@ pub fn set_contributor_repo(repo: GitHubRepo) {
 /**
  * Get the contributor repository from the runtime storage.
  */
-pub fn get_contributor_repo() -> Option<GitHubRepo> {
-    let file = std::fs::File::open(".fosscope_toolkit/contributor_repo.json");
+pub fn get_contributor_repo(upstream: &GitHubRepo) -> Option<GitHubRepo> {
+    let path = format!(
+        ".fosscope_toolkit/contributor_repo_{}_{}.json",
+        upstream.owner, upstream.name
+    );
+    let file = std::fs::File::open(path);
     match file {
         Ok(file) => {
             let reader = std::io::BufReader::new(file);
