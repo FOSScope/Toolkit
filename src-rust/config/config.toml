@@ -1,8 +1,0 @@
-# The preferred editor to use for markdown files
-editor = "code" # By default, it uses Visual Studio Code
-
-[github]
-# GitHub Username
-username = "username"
-# GitHub Token
-token = "token"
