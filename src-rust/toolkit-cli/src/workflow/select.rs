@@ -2,20 +2,11 @@ use std::io::{stdin, stdout, Write};
 use confique::Config;
 
 use fosscopetoolkit_core::parser::html_to_markdown;
-use crate::config::AppConfig;
 
 /**
  * Workflow for selecting new articles to translate.
  */
 pub async fn select() {
-    let config = AppConfig::builder()
-        // Used to get the GitHub username and token while developing and testing the CLI
-        .file("config/cli.dev.toml")
-        // The proper config when in production
-        .file("config/config.toml")
-        .load()
-        .expect("Failed to load the configuration file.");
-
     println!("欢迎参与开源观察翻译项目！");
     print!("请输入要选题的文章的 URL：");
     let _= stdout().flush();

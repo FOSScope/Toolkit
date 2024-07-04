@@ -6,7 +6,6 @@ use fosscopetoolkit_core::set_contributor_repo;
 use crate::github::GitHubAccount;
 use crate::workflow::select;
 
-mod config;
 mod workflow;
 mod github;
 
