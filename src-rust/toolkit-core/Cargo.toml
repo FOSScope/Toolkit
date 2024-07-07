@@ -21,6 +21,7 @@ regex = "1.10.5" # Regular Expression
 reqwest = { version = "0.12", features = ["json"] } # HTTP Client
 octocrab = "0.38.0" # GitHub API
 html2md = { workspace = true } # HTML to Markdown
+libhtmlfilter = "0.1.0" # HTML Filter
 
 [dev-dependencies]
 wiremock = "0.6.0"
