@@ -58,8 +58,8 @@ command = "MV source/{article}.md translated/{article}.md"
 # This section defines how git conventions applies in different steps.
 # `{action}`, `{type}`, and `{article}` are placeholders for the action's name, article type, and article name respectively.
 # Other placeholders can be used as well.
-branch-naming = "{action}/{type}/{article}"  # The branch naming rule.
-commit-message = "[{action.desc}][{type.desc}]: {article.title}"  # The commit message rule.
+branch_naming = "{action}/{type}/{article}"  # The branch naming rule.
+commit_message = "[{action.desc}][{type.desc}]: {article.title}"  # The commit message rule.
 ```
 
 > [!NOTE]
