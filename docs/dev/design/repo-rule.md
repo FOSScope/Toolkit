@@ -17,34 +17,50 @@ So, for the rule definition, it has to be well written to:
 
 Here's how the exact rule file is defined.
 
-The repository rule file will be written to a YAML file, following the structure below:
+The repository rule file will be written to a TOML file, following the structure below:
 
-```yaml
-articles:
-# This section defines the available types of articles to contribute to.
-    - type: news    # The type of article.
-      description: News Articles    # The description of the article type.
-      directory: "{step}/news"      # The directory where the article type is stored.
-                                    # {step} is the placeholder for the directory where the article will be moved from step to step (e.g. "source", "translated", "published", etc.)
-    - type: tech
-      description: Tech Articles
-      directory: "{step}/tech"
-    - ...
+```toml
+[[articles]]
+# Each `[[articles]]` block defines a type of article available to contribute to.
+type = "news"   # The type of article.
+description = "News Articles"   # The description of the article type.
+directory = "{step}/news"   # The directory where the articles of this type are stored.
+                            # `{step}` is the placeholder for the directory where the article will be moved from
+                            # step to step (e.g. "source", "translated", "published", etc.)
 
-actions:
-# This section defines the available actions to make in every step of contribution.
-    - action: select  # The action name.
-      description: Select an article to translate.  # The description of the action.
-      command: "TOUCH source/{article}.md"          # The command to execute when the action is made.
-                                                    # The command follows a *nix shell command syntax, but is defined, parsed, and executed by the core component.
-                                                    # In this case, {article} is the placeholder for the article name. Other placeholders can be used as well.
-    - action: translate
-      description: Translate the article.
-      command: "MV source/{article}.md translated/{article}.md"
+# Multiple article types can be defined.
+[[articles]]
+type = "tech"
+description = "Tech Articles"
+directory = "{step}/tech"
 
-git:
+# [[articles]]
+# ...
+
+[[actions]]
+# Each `[[actions]]` block defines an action that can be made in the contribution process.
+action = "select"   # The action name.
+description = "Select an article to translate."  # The description of the action.
+command = "TOUCH source/{article}.md"   # The command to execute when the action is made.
+                                        # The command follows a *nix shell command syntax, but is defined, parsed, and executed by the core component of Toolkit software.
+                                        # In this case, {article} is the placeholder for the article name.
+
+# Multiple actions can be defined.
+[[actions]]
+action = "translate"
+description = "Translate the article."
+command = "MV source/{article}.md translated/{article}.md"
+
+# [[actions]]
+# ...
+
+[git]
 # This section defines how git conventions applies in different steps.
-    branch-naming: "{action}/{type}/{article}"  # The branch naming convention.
-                                                # {action}, {type}, and {article} are placeholders for the action's name, article type, and article name respectively.
-    commit-message: "[action.desc][type.desc]: {article}" # The commit message convention. Placeholders are also used.
+# `{action}`, `{type}`, and `{article}` are placeholders for the action's name, article type, and article name respectively.
+# Other placeholders can be used as well.
+branch-naming = "{action}/{type}/{article}"  # The branch naming rule.
+commit-message = "[{action.desc}][{type.desc}]: {article.title}"  # The commit message rule.
 ```
+
+> [!NOTE]
+> In general, placeholders like `{step}` can be used anywhere, and placerholders other than what's shown in the example above can be defined and used as well.
