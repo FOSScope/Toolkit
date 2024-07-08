@@ -22,7 +22,7 @@ async fn fork_creation_process(github: &GitHubApi, upstream_repo: &GitHubRepo) -
     stdin().read_line(&mut user_input).unwrap_or(0);
     match user_input.to_lowercase().trim() {
         "y" | "yes" => {
-            let owner = github.get_username();
+            let owner = github.get_user();
             println!("Please enter the name of the owner of the forked repository (default: {}):", owner);
             let mut fork_owner = String::new();
             stdin().read_line(&mut fork_owner).unwrap_or(0);

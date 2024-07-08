@@ -1,12 +1,19 @@
 use regex::Regex;
 
-/**
-  * Get the HTML source content from the given URL.
-  */
+/// Get the HTML content from a given URL.
+/// Only the content between `<body>` and `</body>` tags will be returned.
+///
+/// # Arguments
+/// - `url`: The URL to get the HTML content from.
+///
+/// # Returns
+/// - `Result<String, Box<dyn std::error::Error>>`: The result of getting the HTML content.
+///     - `Ok(String)`: The HTML content between `<body>` and `</body>` tags.
+///     - `Err(Box<dyn std::error::Error>)`: The error message indicating the failure to get the HTML content.
 async fn get_html(url: &str) -> Result<String, Box<dyn std::error::Error>> {
     let client = reqwest::get(url).await?;
     if !client.status().is_success() {
-        return Err("Failed to get the HTML content".into());
+        return Err("Failed to get the HTML content.".into());
     }
 
     let text = client.text().await?;
@@ -20,10 +27,17 @@ async fn get_html(url: &str) -> Result<String, Box<dyn std::error::Error>> {
     Ok(text[body_start..body_end].to_string())
 }
 
-/**
- * Convert the HTML content from a given URL to Markdown.
- * The converted Markdown content will be trimmed.
- */
+/// Convert a webpage's HTML content to Markdown.
+/// Each line of the HTML content will be trimmed before converting to Markdown.
+/// The converted Markdown content will be returned.
+///
+/// # Arguments
+/// - `url`: The URL of the webpage to convert.
+///
+/// # Returns
+/// - `Result<String, Box<dyn std::error::Error>>`: The result of converting the webpage content to Markdown.
+///     - `Ok(String)`: The Markdown content converted from the HTML content.
+///     - `Box<dyn std::error::Error>`: The error message indicating the failure to convert the HTML content to Markdown.
 pub async fn html_to_markdown(url: &str) -> Result<String, Box<dyn std::error::Error>> {
     let html = get_html(url).await?;
 

@@ -5,9 +5,13 @@ pub mod apis;
 pub mod models;
 pub mod parser;
 
-/**
- * Set the contributor repository to the given repository.
- */
+/// Set the contributor repository of an upstream repository.
+/// The information of the contributor repository will be stored in a JSON file.
+/// The file will be kept in the directory across different runs.
+///
+/// # Arguments
+/// - `repo`: The contributor repository.
+/// - `upstream`: The pointer to the upstream repository.
 pub fn set_contributor_repo(repo: GitHubRepo, upstream: &GitHubRepo) {
     println!("Setting the contributor repository to: {}", repo.get_full_name());
 
@@ -31,9 +35,10 @@ pub fn set_contributor_repo(repo: GitHubRepo, upstream: &GitHubRepo) {
     }
 }
 
-/**
- * Get the contributor repository from the runtime storage.
- */
+/// Get the contributor repository of an upstream repository from the JSON file.
+///
+/// # Arguments
+/// - `upstream`: The pointer to the upstream repository.
 pub fn get_contributor_repo(upstream: &GitHubRepo) -> Option<GitHubRepo> {
     let path_str = format!(
         ".fosscope_toolkit/contributor_repo_{}_{}.json",
