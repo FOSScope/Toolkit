@@ -1,7 +1,5 @@
 /// A representation of an article type in the FOSScope repository rule, which defines the types of articles that can be found in the repository.
 ///
-/// Derived from the `serde::Deserialize` trait to allow deserialization from TOML.
-///
 /// # Fields
 /// - `article_type`(`type` in TOML file): The type of the article. e.g. `news`, `tech`.
 /// - `description`: The description of the article type. e.g. `News Articles`, `Tech Articles`.
@@ -9,7 +7,7 @@
 ///
 /// Check the [related design documentation](https://github.com/FOSScope/Toolkit/blob/main/docs/dev/design/repo-rule.md)
 /// and [RepoRule](struct.RepoRule.html) definition for more information.
-#[derive(serde::Deserialize)]
+#[derive(PartialEq, Eq, Debug, serde::Deserialize)]
 pub struct Article {
     /// The type of the article.
     #[serde(rename = "type")]
@@ -20,10 +18,17 @@ pub struct Article {
     pub directory: String,
 }
 
+impl Article {
+    pub fn new(article_type: String, description: String, directory: String) -> Self {
+        Self {
+            article_type,
+            description,
+            directory,
+        }
+    }
+}
 
 /// A representation of an action in the FOSScope repository rule, which actions that can be performed on the repository.
-///
-/// Derived from the `serde::Deserialize` trait to allow deserialization from TOML.
 ///
 /// # Fields
 /// - `action`: The action name. e.g. `select`, `translate`, `review`.
@@ -32,7 +37,7 @@ pub struct Article {
 ///
 /// Check the [related design documentation](https://github.com/FOSScope/Toolkit/blob/main/docs/dev/design/repo-rule.md)
 /// and [RepoRule](struct.RepoRule.html) definition for more information.
-#[derive(serde::Deserialize)]
+#[derive(PartialEq, Eq, Debug, serde::Deserialize)]
 pub struct Action {
     /// The name of the action.
     pub action: String,
@@ -42,9 +47,17 @@ pub struct Action {
     pub command: String,
 }
 
+impl Action {
+    pub fn new(action: String, description: String, command: String) -> Self {
+        Self {
+            action,
+            description,
+            command,
+        }
+    }
+}
+
 /// A representation of the Git rule in the FOSScope repository rule, which defines how repositories should be managed.
-///
-/// Derived from the `serde::Deserialize` trait to allow deserialization from TOML.
 ///
 /// # Fields
 /// - `branch_naming`: The naming convention for branches. Which is a string containing placeholders that will be replaced with the actual values.
@@ -56,7 +69,7 @@ pub struct Action {
 ///
 /// Check the [related design documentation](https://github.com/FOSScope/Toolkit/blob/main/docs/dev/design/repo-rule.md)
 /// and [RepoRule](struct.RepoRule.html) definition for more information.
-#[derive(serde::Deserialize)]
+#[derive(PartialEq, Eq, Debug, serde::Deserialize)]
 pub struct GitRule {
     /// The naming convention for branches. Has to be formatted with real values.
     pub branch_naming: String,
@@ -64,9 +77,16 @@ pub struct GitRule {
     pub commit_message: String,
 }
 
+impl GitRule {
+    pub fn new(branch_naming: String, commit_message: String) -> Self {
+        Self {
+            branch_naming,
+            commit_message,
+        }
+    }
+}
+
 /// A representation of the FOSScope repository rule, which defines how repositories should be managed.
-///
-/// Derived from the `serde::Deserialize` trait to allow deserialization from TOML.
 ///
 /// The rule includes a list of articles, a list of actions, and a Git rule.
 ///
@@ -76,7 +96,7 @@ pub struct GitRule {
 /// - `git`([GitRule](struct.GitRule.html)): The Git rule that defines how the repository should be managed.
 ///
 /// Check the [related design documentation](https://github.com/FOSScope/Toolkit/blob/main/docs/dev/design/repo-rule.md) for more information.
-#[derive(serde::Deserialize)]
+#[derive(PartialEq, Eq, Debug, serde::Deserialize)]
 pub struct RepoRule {
     /// The list of types of articles that can be found in the repository.
     pub articles: Vec<Article>,
@@ -84,4 +104,14 @@ pub struct RepoRule {
     pub actions: Vec<Action>,
     /// The Git rule that defines how the repository should be managed.
     pub git: GitRule,
+}
+
+impl RepoRule {
+    pub fn new(articles: Vec<Article>, actions: Vec<Action>, git: GitRule) -> Self {
+        Self {
+            articles,
+            actions,
+            git,
+        }
+    }
 }

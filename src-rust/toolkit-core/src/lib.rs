@@ -1,5 +1,5 @@
 use std::io::Write;
-use crate::models::GitHubRepo;
+use crate::models::{GitHubRepo, RepoRule};
 
 pub mod apis;
 pub mod models;
@@ -56,5 +56,24 @@ pub fn get_contributor_repo(upstream: &GitHubRepo) -> Option<GitHubRepo> {
             Some(contributor_repo)
         }
         Err(_) => None
+    }
+}
+
+/// Get the deserialized repository rule from the TOML string.
+///
+/// # Arguments
+/// - `rule`: The TOML string representing the repository rule.
+///
+/// # Returns
+/// - `Result<RepoRule, &str>`
+///     - `Ok(RepoRule)`: The deserialized repository rule.
+///     - `Err(&str)`: An error message indicating that the method failed and why.
+pub fn get_repo_rule(rule: &str) -> Result<RepoRule, String>{
+    let deserialized: Result<RepoRule, _> = toml::from_str(&rule);
+    match deserialized {
+        Ok(rule) => Ok(rule),
+        Err(err) => {
+            Err(format!("Failed to deserialize the repository rule: {}", err))
+        }
     }
 }
