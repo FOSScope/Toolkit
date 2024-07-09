@@ -39,3 +39,4 @@ You can also start the frontend with `npm run dev`, then start the backend and t
 ## Contributors
 
 - [@Cubik65536](https://github.com/Cubik65536) - Lead Developer, Project Manager
+- [@sureau2020](https://github.com/sureau2020) - Frontend Developer, Frontend Designer

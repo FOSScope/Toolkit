@@ -39,3 +39,4 @@
 ## 贡献者
 
 - [@Cubik65536](https://github.com/Cubik65536) - 首席开发者，项目经理
+- [@sureau2020](https://github.com/sureau2020) - 前端开发者，前端设计师
