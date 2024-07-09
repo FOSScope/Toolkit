@@ -3,7 +3,6 @@
   "description": "为开源观察贡献者设计的工具箱",
   "version": "0.1.0-dev",
   "type": "module",
-
   "private": false,
   "repository": {
     "type": "git",
@@ -20,25 +19,27 @@
       "name": "FOSScope Contributors"
     }
   ],
-
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri"
   },
-
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.5.2",
+    "@tauri-apps/api": "^1",
+    "bootstrap": "^5.3.3",
+    "mdb-react-ui-kit": "^8.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "@tauri-apps/api": "^1"
+    "react-router-dom": "^6.24.1"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^1",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.2.1",
     "typescript": "^5.0.2",
-    "vite": "^5.0.0",
-    "@tauri-apps/cli": "^1"
+    "vite": "^5.3.2"
   }
 }
