@@ -38,5 +38,6 @@
 
 ## 贡献者
 
-- [@Cubik65536](https://github.com/Cubik65536) - 首席开发者，项目经理
-- [@sureau2020](https://github.com/sureau2020) - 前端开发者，前端设计师
+- [@Cubik65536](https://github.com/Cubik65536) - 首席开发者 & 项目经理
+- [@cys2004](https://github.com/cys2004) - 副项目经理 & 开发者，HTML 处理机制
+- [@sureau2020](https://github.com/sureau2020) - 前端开发者 & 前端设计师
