@@ -4,8 +4,7 @@ use crate::models::repo_rule::RepoRule;
 
 pub mod apis;
 pub mod models;
-pub mod parser;
-mod workflow;
+pub mod workflow;
 
 /// Set the contributor repository of an upstream repository.
 /// The information of the contributor repository will be stored in a JSON file.
