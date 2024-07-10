@@ -1,5 +1,3 @@
-mod github_repo;
-mod repo_rule;
-
-pub use github_repo::*;
-pub use repo_rule::*;
+pub mod github_repo;
+pub mod repo_rule;
+pub mod html_filter_rule;

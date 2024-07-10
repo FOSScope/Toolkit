@@ -1,3 +1,1 @@
-mod github_account;
-
-pub use github_account::GitHubAccount;
+pub mod github_account;

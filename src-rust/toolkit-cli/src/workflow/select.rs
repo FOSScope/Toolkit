@@ -1,6 +1,6 @@
 use std::io::{stdin, stdout, Write};
 
-use fosscopetoolkit_core::parser::html_to_markdown;
+use fosscopetoolkit_core::parser::html_to_markdown::html_to_markdown;
 use crate::config::get_config;
 
 /**

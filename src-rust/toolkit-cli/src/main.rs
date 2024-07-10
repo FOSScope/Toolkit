@@ -1,11 +1,11 @@
 use std::io::{stdin, stdout, Write};
 
-use fosscopetoolkit_core::apis::GitHubApi;
-use fosscopetoolkit_core::models::GitHubRepo;
 use fosscopetoolkit_core::{get_contributor_repo, set_contributor_repo};
-use config::github::GitHubAccount;
+use fosscopetoolkit_core::apis::github_api::GitHubApi;
+use fosscopetoolkit_core::models::github_repo::GitHubRepo;
+use crate::config::github::github_account::GitHubAccount;
 use crate::config::initial_configuration_process;
-use crate::workflow::select;
+use crate::workflow::select::select;
 
 mod workflow;
 mod config;
@@ -22,7 +22,7 @@ async fn fork_creation_process(github: &GitHubApi, upstream_repo: &GitHubRepo) -
     stdin().read_line(&mut user_input).unwrap_or(0);
     match user_input.to_lowercase().trim() {
         "y" | "yes" => {
-            let owner = github.get_user();
+            let owner = github.get_user().await.unwrap();
             println!("Please enter the name of the owner of the forked repository (default: {}):", owner);
             let mut fork_owner = String::new();
             stdin().read_line(&mut fork_owner).unwrap_or(0);
@@ -30,7 +30,7 @@ async fn fork_creation_process(github: &GitHubApi, upstream_repo: &GitHubRepo) -
             if fork_owner.is_empty() {
                 fork_owner = owner;
             }
-            let repo_name = upstream_repo.clone().name;
+            let repo_name = upstream_repo.name.clone();
             println!("Please enter the name of the forked repository (default: {}):", repo_name);
             let mut fork_repo_name = String::new();
             stdin().read_line(&mut fork_repo_name).unwrap_or(0);
