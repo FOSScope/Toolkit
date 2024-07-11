@@ -19,10 +19,12 @@ serde = { version = "1", features = ["derive"] } # Serialization
 serde_json = "1.0.117" # JSON Serialization
 toml = "0.8.14" # TOML Serialization
 regex = "1.10.5" # Regular Expression
+url = "2.5.2" # URL Parsing
 reqwest = { version = "0.12", features = ["json"] } # HTTP Client
 octocrab = "0.38.0" # GitHub API
 html2md = { workspace = true } # HTML to Markdown
-libhtmlfilter = "0.1.0" # HTML Filter
+libhtmlfilter = "0.1.2" # HTML Filter
+openai_api_rust = "0.1.9" # OpenAI API
 
 [dev-dependencies]
 wiremock = "0.6.0"

@@ -1,9 +1,10 @@
 use std::io::Write;
-use crate::models::{GitHubRepo, RepoRule};
+use crate::models::github_repo::GitHubRepo;
+use crate::models::repo_rule::RepoRule;
 
 pub mod apis;
 pub mod models;
-pub mod parser;
+pub mod workflow;
 
 /// Set the contributor repository of an upstream repository.
 /// The information of the contributor repository will be stored in a JSON file.

@@ -1,12 +1,11 @@
 use std::io::{stdin, stdout, Write};
-
-use fosscopetoolkit_core::parser::html_to_markdown;
+use fosscopetoolkit_core::workflow::translate::select::get_content;
 use crate::config::get_config;
 
 /**
  * Workflow for selecting new articles to translate.
  */
-pub async fn select() {
+pub fn select() {
     let config = get_config();
 
     println!("欢迎参与开源观察翻译项目！");
@@ -17,8 +16,8 @@ pub async fn select() {
     let url = url.trim();
     println!("您选择的文章 URL 是：{}", url);
 
-    // Convert to Markdown
-    let markdown = html_to_markdown(url).await;
+    // Get markdown content
+    let markdown = get_content(url);
 
     match markdown {
         Ok(markdown) => {

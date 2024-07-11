@@ -1,7 +1,7 @@
 use octocrab::models::Repository;
 use serde_json;
 use octocrab::Octocrab;
-use super::super::models::GitHubRepo;
+use crate::models::github_repo::GitHubRepo;
 
 /// A wrapper around the GitHub API that provides a set of methods to interact with the GitHub API.
 ///
