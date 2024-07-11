@@ -5,7 +5,7 @@ use crate::config::get_config;
 /**
  * Workflow for selecting new articles to translate.
  */
-pub async fn select() {
+pub fn select() {
     let config = get_config();
 
     println!("欢迎参与开源观察翻译项目！");
@@ -17,7 +17,7 @@ pub async fn select() {
     println!("您选择的文章 URL 是：{}", url);
 
     // Get markdown content
-    let markdown = get_content(url).await;
+    let markdown = get_content(url);
 
     match markdown {
         Ok(markdown) => {
