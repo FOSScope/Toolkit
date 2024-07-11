@@ -826,6 +826,7 @@ name = "fosscopetoolkit-core"
 version = "0.1.0-dev"
 dependencies = [
  "html2md",
+ "kuchiki",
  "libhtmlfilter",
  "octocrab",
  "regex",
@@ -2997,6 +2998,7 @@ dependencies = [
  "base64 0.22.1",
  "bytes",
  "encoding_rs",
+ "futures-channel",
  "futures-core",
  "futures-util",
  "h2 0.4.5",
