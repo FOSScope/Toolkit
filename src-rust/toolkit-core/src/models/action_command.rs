@@ -36,8 +36,23 @@ impl ActionCommand {
             "CP" => {
                 let src = self.args.get(0).unwrap();
                 let dest = self.args.get(1).unwrap();
-                std::fs::copy(src, dest).unwrap();
-                Ok(())
+
+                let src_dir = std::path::Path::new(src);
+                if src_dir.is_dir() {
+                    let r = copy_dir_all(src, dest);
+                    match r {
+                        Ok(_) => Ok(()),
+                        Err(_) => Err("Error copying directory"),
+                    }
+                } else {
+                    let dest_dir = std::path::Path::new(dest);
+                    if !dest_dir.exists() {
+                        std::fs::create_dir_all(dest_dir.parent().unwrap()).unwrap();
+                    }
+
+                    std::fs::copy(src, dest).unwrap();
+                    Ok(())
+                }
             }
             // Create a directory
             "MKDIR" => {
@@ -71,4 +86,18 @@ impl ActionCommand {
             _ => Err("Unknown command"),
         }
     }
+}
+
+fn copy_dir_all(src: impl AsRef<std::path::Path>, dst: impl AsRef<std::path::Path>) -> std::io::Result<()> {
+    std::fs::create_dir_all(&dst)?;
+    for entry in std::fs::read_dir(src)? {
+        let entry = entry?;
+        let ty = entry.file_type()?;
+        if ty.is_dir() {
+            copy_dir_all(entry.path(), dst.as_ref().join(entry.file_name()))?;
+        } else {
+            std::fs::copy(entry.path(), dst.as_ref().join(entry.file_name()))?;
+        }
+    }
+    Ok(())
 }
