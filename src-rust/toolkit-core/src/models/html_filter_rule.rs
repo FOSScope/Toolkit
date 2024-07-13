@@ -1,6 +1,6 @@
-pub struct HTMLFilterRule {
-    pub tags: Vec<&str>,
-    pub classes: Vec<&str>,
+pub struct HTMLFilterRule<'a> {
+    pub tags: Vec<&'a str>,
+    pub classes: Vec<&'a str>,
 }
 
 impl HTMLFilterRule {
