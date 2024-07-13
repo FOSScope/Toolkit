@@ -1,3 +1,5 @@
+use crate::models::action_command::ActionCommand;
+
 /// A representation of an article type in the FOSScope repository rule, which defines the types of articles that can be found in the repository.
 ///
 /// # Fields
@@ -49,11 +51,11 @@ pub struct Action {
     /// The description of the action.
     pub description: String,
     /// The command that should be executed when the action is performed.
-    pub command: String,
+    pub command: ActionCommand,
 }
 
 impl Action {
-    pub fn new(action: String, description: String, command: String) -> Self {
+    pub fn new(action: String, description: String, command: ActionCommand) -> Self {
         Self {
             action,
             description,

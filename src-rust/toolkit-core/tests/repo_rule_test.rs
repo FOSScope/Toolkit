@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod tests {
     use fosscopetoolkit_core::get_repo_rule;
+    use fosscopetoolkit_core::models::action_command::ActionCommand;
     use fosscopetoolkit_core::models::repo_rule::{Article, Action, GitRule, RepoRule};
 
     #[test]
@@ -59,8 +60,12 @@ commit_message = "[{{action_desc}}][{{type_desc}}]: {{article_title}}"  # The co
 
         let news: Article = Article::new("news".to_string(), "News Articles".to_string(), "{{step}}/news".to_string(), Some("---\nNews Article Template\n---".to_string()));
         let tech: Article = Article::new("tech".to_string(), "Tech Articles".to_string(), "{{step}}/tech".to_string(), None);
-        let select: Action = Action::new("select".to_string(), "Select an article to translate.".to_string(), "TOUCH source/{{article_id}}.md".to_string());
-        let translate: Action = Action::new("translate".to_string(), "Translate the article.".to_string(), "MV source/{{article_id}}.md translated/{{article_id}}.md".to_string());
+        let select: Action = Action::new("select".to_string(), "Select an article to translate.".to_string(),
+            ActionCommand::new("TOUCH".to_string(), vec!["source/{{article_id}}.md".to_string()])
+        );
+        let translate: Action = Action::new("translate".to_string(), "Translate the article.".to_string(),
+            ActionCommand::new("MV".to_string(), vec!["source/{{article_id}}.md".to_string(), "translated/{{article_id}}.md".to_string()])
+        );
         let git_rule: GitRule = GitRule::new("{{action_name}}/{{type_name}}/{{article_id}}".to_string(), "[{{action_desc}}][{{type_desc}}]: {{article_title}}".to_string());
 
         let expected = RepoRule::new("---\nGeneral Article Template\n---".to_string(), vec![news, tech], vec![select, translate], git_rule);
