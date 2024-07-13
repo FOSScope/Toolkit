@@ -23,32 +23,13 @@ pub fn get_content(url: &str) -> Result<String, String> {
         host.unwrap()
     };
 
-    let html_filter_rule_path = format!("rsc/html_filter_rules/{}.toml", host);
-    let html_filter_rule_str = std::fs::read_to_string(html_filter_rule_path);
-    let html_filter_rule = match html_filter_rule_str {
-        Ok(html_filter_rule_str) => {
-            let html_filter_rule: Result<HTMLFilterRule, _> = toml::from_str(&html_filter_rule_str);
-            match html_filter_rule {
-                Ok(html_filter_rule) => html_filter_rule,
-                Err(_) => {
-                    let error_msg = format!(
-                        "Failed to parse the HTML filter rule for the website: {}", host
-                    );
-                    return Err(error_msg);
-                }
-            }
-        },
-        Err(_) => {
-            // Use the default HTML filter rule (no tags and classes to filter)
-            HTMLFilterRule::new(Vec::new(), Vec::new())
-        }
-    };
+    let html_filter_rule = HTMLFilterRule::get_filter_rule(host);
 
     // Filter the HTML content
     let filtered_html = libhtmlfilter::get_filtered_html_fullurl_removeref(
         url,
-        html_filter_rule.tags.iter().map(|s| s.as_str()).collect::<Vec<&str>>().as_slice(),
-        html_filter_rule.classes.iter().map(|s| s.as_str()).collect::<Vec<&str>>().as_slice()
+        &*html_filter_rule.tags,
+        &*html_filter_rule.classes
     );
 
     // Parse HTML to markdown
