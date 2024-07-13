@@ -3,7 +3,9 @@
 /// # Fields
 /// - `article_type`(`type` in TOML file): The type of the article. e.g. `news`, `tech`.
 /// - `description`: The description of the article type. e.g. `News Articles`, `Tech Articles`.
-/// - `directory`: The directory where the article type is stored. e.g. `{step}/news`, `{step}/tech`.
+/// - `directory`: The directory where the article type is stored. e.g. `{{step}}/news`, `{{step}}/tech`.
+/// - `article_template`: An optional article template to use when creating a new source file for an article.
+///     If not provided, the `article_template` from the [`RepoRule`](struct.RepoRule.html) will be used.
 ///
 /// Check the [related design documentation](https://github.com/FOSScope/Toolkit/blob/main/docs/dev/design/repo-rule.md)
 /// and [RepoRule](struct.RepoRule.html) definition for more information.
@@ -16,14 +18,17 @@ pub struct Article {
     pub description: String,
     /// The directory where the article type is stored.
     pub directory: String,
+    /// An optional article template to use when creating a new source file for an article.
+    pub article_template: Option<String>,
 }
 
 impl Article {
-    pub fn new(article_type: String, description: String, directory: String) -> Self {
+    pub fn new(article_type: String, description: String, directory: String, article_template: Option<String>) -> Self {
         Self {
             article_type,
             description,
             directory,
+            article_template,
         }
     }
 }
@@ -33,7 +38,7 @@ impl Article {
 /// # Fields
 /// - `action`: The action name. e.g. `select`, `translate`, `review`.
 /// - `description`: The description of the action. e.g. `Select an article to translate`.
-/// - `command`: The command that should be executed when the action is performed. e.g. `TOUCH source/{article}.md`.
+/// - `command`: The command that should be executed when the action is performed. e.g. `TOUCH source/{{article_id}}.md`.
 ///
 /// Check the [related design documentation](https://github.com/FOSScope/Toolkit/blob/main/docs/dev/design/repo-rule.md)
 /// and [RepoRule](struct.RepoRule.html) definition for more information.
@@ -64,8 +69,8 @@ impl Action {
 /// - `commit_message`: The commit message template. Which is a string containing placeholders that will be replaced with the actual values.
 ///
 /// # Example
-/// - `branch_naming`: `{action}/{type}/{article}`
-/// - `commit_message`: `[{action.desc}][{type.desc}]: {article.title}`
+/// - `branch_naming`: `{{action_name}}/{{type_name}}/{{article_id}}`
+/// - `commit_message`: `[{{action_desc}}][{{type_desc}}]: {{article_title}}`
 ///
 /// Check the [related design documentation](https://github.com/FOSScope/Toolkit/blob/main/docs/dev/design/repo-rule.md)
 /// and [RepoRule](struct.RepoRule.html) definition for more information.
@@ -91,6 +96,7 @@ impl GitRule {
 /// The rule includes a list of articles, a list of actions, and a Git rule.
 ///
 /// # Fields
+/// - `article_template`(String): The article template to use when creating a new source file for an article.
 /// - `articles`([Article](struct.Article.html)): A list of types of articles that can be found in the repository.
 /// - `actions`([Action](struct.Action.html)): : A list of actions that can be performed on the repository.
 /// - `git`([GitRule](struct.GitRule.html)): The Git rule that defines how the repository should be managed.
@@ -98,6 +104,8 @@ impl GitRule {
 /// Check the [related design documentation](https://github.com/FOSScope/Toolkit/blob/main/docs/dev/design/repo-rule.md) for more information.
 #[derive(PartialEq, Eq, Debug, serde::Deserialize)]
 pub struct RepoRule {
+    /// The article template to use when creating a new source file for an article.
+    pub article_template: String,
     /// The list of types of articles that can be found in the repository.
     pub articles: Vec<Article>,
     /// The list of actions that can be performed on the repository.
@@ -107,8 +115,9 @@ pub struct RepoRule {
 }
 
 impl RepoRule {
-    pub fn new(articles: Vec<Article>, actions: Vec<Action>, git: GitRule) -> Self {
+    pub fn new(article_template: String, articles: Vec<Article>, actions: Vec<Action>, git: GitRule) -> Self {
         Self {
+            article_template,
             articles,
             actions,
             git,
