@@ -71,6 +71,12 @@ impl ActionCommand {
             "MV" => {
                 let src = self.args.get(0).unwrap();
                 let dest = self.args.get(1).unwrap();
+
+                let dest_dir = std::path::Path::new(dest);
+                if !dest_dir.exists() {
+                    std::fs::create_dir_all(dest_dir.parent().unwrap()).unwrap();
+                }
+
                 std::fs::rename(src, dest).unwrap();
                 Ok(())
             }
