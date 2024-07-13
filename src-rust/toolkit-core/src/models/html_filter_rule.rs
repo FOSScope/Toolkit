@@ -1,11 +1,10 @@
-#[derive(PartialEq, Eq, Debug, serde::Deserialize)]
 pub struct HTMLFilterRule {
-    pub tags: Vec<String>,
-    pub classes: Vec<String>,
+    pub tags: Vec<&str>,
+    pub classes: Vec<&str>,
 }
 
 impl HTMLFilterRule {
-    pub fn new(tags: Vec<String>, classes: Vec<String>) -> Self {
+    pub fn new(tags: Vec<&str>, classes: Vec<&str>) -> Self {
         Self {
             tags,
             classes,
