@@ -29,4 +29,41 @@ impl ActionCommand {
             args,
         }
     }
+
+    pub fn execute(&self) {
+        match self.command.as_str() {
+            // Copy a file or a directory
+            "CP" => {
+                let src = self.args.get(0).unwrap();
+                let dest = self.args.get(1).unwrap();
+                std::fs::copy(src, dest).unwrap();
+            }
+            // Create a directory
+            "MKDIR" => {
+                let path = self.args.get(0).unwrap();
+                std::fs::create_dir_all(path).unwrap();
+            }
+            // Move a file or a directory
+            "MV" => {
+                let src = self.args.get(0).unwrap();
+                let dest = self.args.get(1).unwrap();
+                std::fs::rename(src, dest).unwrap();
+            }
+            // Remove a file or a directory
+            "RM" => {
+                let path = self.args.get(0).unwrap();
+                if std::fs::metadata(path).unwrap().is_dir() {
+                    std::fs::remove_dir_all(path).unwrap();
+                } else {
+                    std::fs::remove_file(path).unwrap();
+                }
+            }
+            // Create a file
+            "TOUCH" => {
+                let path = self.args.get(0).unwrap();
+                std::fs::File::create(path).unwrap();
+            }
+            _ => {}
+        }
+    }
 }
