@@ -54,6 +54,13 @@ impl ActionCommand {
                     Ok(())
                 }
             }
+            // Write a content to a file
+            "ECHO" => {
+                let path = self.args.get(0).unwrap();
+                let content = self.args.get(1).unwrap();
+                std::fs::write(path, content).unwrap();
+                Ok(())
+            }
             // Create a directory
             "MKDIR" => {
                 let path = self.args.get(0).unwrap();
