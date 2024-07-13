@@ -65,7 +65,7 @@ directory = "{{step}}/news"   # The directory where the articles of this type ar
                             # step to step (e.g. "source", "translated", "published", etc.)
 # If needed, a specific article template can be defined for this article type.
 # Otherwise, the default article template will be used.
-# template = """
+# article_template = """
 # """
 
 # Multiple article types can be defined.
