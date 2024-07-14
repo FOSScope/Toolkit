@@ -33,18 +33,20 @@ impl ActionCommand {
         }
     }
 
-    pub fn execute(&self, vars: Option<HashMap<&str, &str>>) -> Result<(), &str> {
+    pub fn execute(&self, vars: Option<&HashMap<&str, &str>>) -> Result<(), &str> {
+        let mut args = self.args.clone();
+        if vars.is_some() {
+            let handlebars = Handlebars::new();
+            args = args.iter().map(
+                |arg| handlebars.render_template(&*arg, &vars).unwrap()
+            ).collect();
+        }
+
         match self.command.as_str() {
             // Copy a file or a directory
             "CP" => {
-                let mut src = String::from(self.args.get(0).unwrap());
-                let mut dest = String::from(self.args.get(1).unwrap());
-
-                if vars.is_some() {
-                    let handlebars = Handlebars::new();
-                    src = handlebars.render_template(&*src, &vars).unwrap();
-                    dest = handlebars.render_template(&*dest, &vars).unwrap();
-                }
+                let src = args.get(0).unwrap();
+                let dest = args.get(1).unwrap();
 
                 let src_dir = std::path::Path::new(&src);
                 if src_dir.is_dir() {
@@ -65,21 +67,21 @@ impl ActionCommand {
             }
             // Write a content to a file
             "ECHO" => {
-                let path = self.args.get(0).unwrap();
-                let content = self.args.get(1).unwrap();
+                let path = args.get(0).unwrap();
+                let content = args.get(1).unwrap();
                 std::fs::write(path, content).unwrap();
                 Ok(())
             }
             // Create a directory
             "MKDIR" => {
-                let path = self.args.get(0).unwrap();
+                let path = args.get(0).unwrap();
                 std::fs::create_dir_all(path).unwrap();
                 Ok(())
             }
             // Move a file or a directory
             "MV" => {
-                let src = self.args.get(0).unwrap();
-                let dest = self.args.get(1).unwrap();
+                let src = args.get(0).unwrap();
+                let dest = args.get(1).unwrap();
 
                 let dest_dir = std::path::Path::new(dest);
                 if !dest_dir.exists() {
@@ -91,7 +93,7 @@ impl ActionCommand {
             }
             // Remove a file or a directory
             "RM" => {
-                let path = self.args.get(0).unwrap();
+                let path = args.get(0).unwrap();
                 if std::fs::metadata(path).unwrap().is_dir() {
                     std::fs::remove_dir_all(path).unwrap();
                 } else {
@@ -101,7 +103,7 @@ impl ActionCommand {
             }
             // Create a file
             "TOUCH" => {
-                let path = self.args.get(0).unwrap();
+                let path = args.get(0).unwrap();
                 std::fs::File::create(path).unwrap();
                 Ok(())
             }
