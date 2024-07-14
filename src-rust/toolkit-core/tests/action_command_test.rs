@@ -142,10 +142,10 @@ mod tests {
     #[test]
     fn cp_with_env() {
         // Create Test Directory
-        let _ = std::fs::create_dir(".test/with_template_engine");
+        let _ = std::fs::create_dir_all(".test/with_template_engine");
 
         // Create Test Directory
-        let _ = std::fs::create_dir(".test/with_template_engine/source");
+        let _ = std::fs::create_dir_all(".test/with_template_engine/source");
         // Create Test File
         let _ = std::fs::write(".test/with_template_engine/source/test.md", "Test File");
 
@@ -162,7 +162,7 @@ mod tests {
         data.insert("from", "with_template_engine/source");
         data.insert("to", "with_template_engine/copied");
 
-        let r = command.execute(Some(data));
+        let r = command.execute(Some(&data));
         assert!(r.is_ok());
     }
 }
