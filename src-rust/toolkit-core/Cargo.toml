@@ -25,6 +25,7 @@ octocrab = "0.38.0" # GitHub API
 html2md = { workspace = true } # HTML to Markdown
 libhtmlfilter = "0.1.2" # HTML Filter
 openai_api_rust = "0.1.9" # OpenAI API
+handlebars = "5.1.2" # Template Engine
 
 [dev-dependencies]
 wiremock = "0.6.0"
