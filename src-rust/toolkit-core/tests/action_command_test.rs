@@ -1,4 +1,5 @@
 mod tests {
+    use std::collections::HashMap;
     use fosscopetoolkit_core::models::action_command::ActionCommand;
 
     #[test]
@@ -20,7 +21,7 @@ mod tests {
             ],
         );
 
-        let r = command.execute();
+        let r = command.execute(None);
         assert!(r.is_ok());
 
         let _ = std::fs::create_dir(".test/source_dir");
@@ -34,7 +35,7 @@ mod tests {
             ],
         );
 
-        let r = command.execute();
+        let r = command.execute(None);
         assert!(r.is_ok());
     }
 
@@ -52,7 +53,7 @@ mod tests {
             ],
         );
 
-        let r = command.execute();
+        let r = command.execute(None);
         assert!(r.is_ok());
     }
 
@@ -69,7 +70,7 @@ mod tests {
             ],
         );
 
-        let r = command.execute();
+        let r = command.execute(None);
         assert!(r.is_ok());
     }
 
@@ -92,7 +93,7 @@ mod tests {
             ],
         );
 
-        let r = command.execute();
+        let r = command.execute(None);
         assert!(r.is_ok());
 
         let _ = std::fs::write(".test/mv-src/test.md", "Dir Test File");
@@ -105,7 +106,7 @@ mod tests {
             ],
         );
 
-        let r = command.execute();
+        let r = command.execute(None);
         assert!(r.is_ok());
     }
 
@@ -122,7 +123,7 @@ mod tests {
             ],
         );
 
-        let r = command.execute();
+        let r = command.execute(None);
         assert!(r.is_ok());
     }
 
@@ -134,7 +135,34 @@ mod tests {
             vec![],
         );
 
-        let r = command.execute();
+        let r = command.execute(None);
         assert!(r.is_err());
+    }
+
+    #[test]
+    fn cp_with_env() {
+        // Create Test Directory
+        let _ = std::fs::create_dir(".test/with_template_engine");
+
+        // Create Test Directory
+        let _ = std::fs::create_dir(".test/with_template_engine/source");
+        // Create Test File
+        let _ = std::fs::write(".test/with_template_engine/source/test.md", "Test File");
+
+        // Test The Command
+        let command = ActionCommand::new(
+            "CP".to_string(),
+            vec![
+                ".test/{{ from }}/test.md".to_string(),
+                ".test/{{ to }}/test.md".to_string(),
+            ],
+        );
+
+        let mut data = HashMap::new();
+        data.insert("from", "with_template_engine/source");
+        data.insert("to", "with_template_engine/copied");
+
+        let r = command.execute(Some(data));
+        assert!(r.is_ok());
     }
 }
