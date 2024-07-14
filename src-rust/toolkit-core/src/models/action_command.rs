@@ -1,3 +1,6 @@
+use std::collections::HashMap;
+use handlebars::Handlebars;
+
 #[derive(PartialEq, Eq, Debug)]
 pub struct ActionCommand {
     pub command: String,
@@ -30,14 +33,20 @@ impl ActionCommand {
         }
     }
 
-    pub fn execute(&self) -> Result<(), &str> {
+    pub fn execute(&self, vars: Option<HashMap<&str, &str>>) -> Result<(), &str> {
         match self.command.as_str() {
             // Copy a file or a directory
             "CP" => {
-                let src = self.args.get(0).unwrap();
-                let dest = self.args.get(1).unwrap();
+                let mut src = String::from(self.args.get(0).unwrap());
+                let mut dest = String::from(self.args.get(1).unwrap());
 
-                let src_dir = std::path::Path::new(src);
+                if vars.is_some() {
+                    let handlebars = Handlebars::new();
+                    src = handlebars.render_template(&*src, &vars).unwrap();
+                    dest = handlebars.render_template(&*dest, &vars).unwrap();
+                }
+
+                let src_dir = std::path::Path::new(&src);
                 if src_dir.is_dir() {
                     let r = copy_dir_all(src, dest);
                     match r {
@@ -45,7 +54,7 @@ impl ActionCommand {
                         Err(_) => Err("Error copying directory"),
                     }
                 } else {
-                    let dest_dir = std::path::Path::new(dest);
+                    let dest_dir = std::path::Path::new(&dest);
                     if !dest_dir.exists() {
                         std::fs::create_dir_all(dest_dir.parent().unwrap()).unwrap();
                     }
