@@ -1,10 +1,11 @@
 use std::collections::HashMap;
 use std::io::{stdin, stdout, Write};
-use tokio::runtime::Runtime;
+
 use fosscopetoolkit_core::apis::github_api::GitHubApi;
 use fosscopetoolkit_core::models::github_repo::GitHubRepo;
 use fosscopetoolkit_core::models::repo_rule::get_repo_rule;
 use fosscopetoolkit_core::workflow::translate::select::select_article;
+
 use crate::config::get_config;
 
 /**
@@ -59,7 +60,7 @@ pub async fn select(
     vars.insert("via", url);
     vars.insert("selector", &user);
 
-    let article = select_article(&repo_rule, article_type, &vars);
+    let article = select_article(&repo_rule, article_type, &vars).await;
     if article.is_err() {
         eprintln!("Failed to select article: {:?}", article.err());
         return;

@@ -5,7 +5,7 @@ use handlebars::Handlebars;
 use crate::models::html_filter_rule::HTMLFilterRule;
 use crate::models::repo_rule::{Article, RepoRule};
 
-pub fn get_content(url: &str) -> Result<String, String> {
+pub async fn get_content(url: &str) -> Result<String, String> {
     let website = url::Url::parse(url);
     let website = match website {
         Ok(website) => website,
@@ -27,12 +27,12 @@ pub fn get_content(url: &str) -> Result<String, String> {
         url,
         &*html_filter_rule.tags,
         &*html_filter_rule.classes
-    );
+    ).await;
 
     Ok(html2md::parse_html(&filtered_html).trim().to_string())
 }
 
-pub fn select_article(
+pub async fn select_article(
     repo_rule: &RepoRule,
     article_type: &Article,
     vars: &HashMap<&str, &str>
@@ -41,7 +41,7 @@ pub fn select_article(
 
     let url = local_vars.get("via").unwrap();
 
-    let content = get_content(url);
+    let content = get_content(url).await;
     if content.is_err() {
         return content;
     }
