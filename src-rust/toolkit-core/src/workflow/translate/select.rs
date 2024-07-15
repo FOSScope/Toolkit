@@ -48,7 +48,7 @@ pub fn get_content(url: &str) -> Result<String, String> {
 
 pub fn select_article(
     repo_rule: &RepoRule,
-    article: &Article,
+    article_type: &Article,
     vars: &HashMap<&str, &str>
 ) -> Result<String, String> {
     let mut local_vars = vars.clone();
@@ -74,6 +74,6 @@ pub fn select_article(
     // Render the complete content
     let handlebars = Handlebars::new();
     Ok(
-        handlebars.render_template(&*repo_rule.get_article_template(article), &local_vars).unwrap()
+        handlebars.render_template(&*repo_rule.get_article_template(article_type), &local_vars).unwrap()
     )
 }
