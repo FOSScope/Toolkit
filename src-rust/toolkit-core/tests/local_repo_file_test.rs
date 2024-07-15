@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use fosscopetoolkit_core::models::GitHubRepo;
+    use fosscopetoolkit_core::models::github_repo::GitHubRepo;
     use fosscopetoolkit_core::{get_contributor_repo, set_contributor_repo};
 
     #[test]

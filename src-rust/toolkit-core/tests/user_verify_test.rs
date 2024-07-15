@@ -41,7 +41,7 @@ fn setup_octocrab(uri: &str) -> Octocrab {
 
 #[cfg(test)]
 mod tests {
-    use fosscopetoolkit_core::apis::GitHubApi;
+    use fosscopetoolkit_core::apis::github_api::GitHubApi;
     use super::*;
 
     #[tokio::test]
