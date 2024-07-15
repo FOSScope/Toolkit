@@ -23,7 +23,8 @@ url = "2.5.2" # URL Parsing
 reqwest = { version = "0.12", features = ["json"] } # HTTP Client
 octocrab = "0.38.0" # GitHub API
 html2md = { workspace = true } # HTML to Markdown
-libhtmlfilter = "0.1.2" # HTML Filter
+#libhtmlfilter = "0.1.2" # HTML Filter
+libhtmlfilter = { git = "https://github.com/FOSScope/libhtmlfilter.git", rev = "e403113e901ae3cd422c86ab7ca6602e3ba78ab8" } # HTML Filter
 openai_api_rust = "0.1.9" # OpenAI API
 handlebars = "5.1.2" # Template Engine
 
