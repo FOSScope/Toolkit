@@ -31,8 +31,7 @@ impl GitHubApi {
             Ok(user) => Ok(user.login),
             Err(_) => {
                 Err(
-                    "Failed to get the username of the currently signed in GitHub user.\
-                    Coule be due to an invalid token."
+                    "Failed to get the username of the currently signed in GitHub user. Could be due to an invalid token."
                 )
             },
         }

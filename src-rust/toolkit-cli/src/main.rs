@@ -1,5 +1,4 @@
 use std::io::{stdin, stdout, Write};
-use tokio::runtime::Runtime;
 use fosscopetoolkit_core::{get_contributor_repo, set_contributor_repo};
 use fosscopetoolkit_core::apis::github_api::GitHubApi;
 use fosscopetoolkit_core::models::github_repo::GitHubRepo;
@@ -201,10 +200,11 @@ async fn login() -> GitHubApi {
     }
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let _= initial_configuration_process();
 
-    let github = Runtime::new().unwrap().block_on(login());
+    let github = login().await;
 
     println!("Please select the upstream repository you want to work with:");
     println!("1. FOSScope/Articles - 开源观察原创文章与中文转载文章源文件");
@@ -237,9 +237,13 @@ fn main() {
         std::process::exit(1);
     }
 
-    if get_contributor_repo(&upstream_repo).is_none() {
-        Runtime::new().unwrap().block_on(fork_check(&github, upstream_repo));
-    }
+    let contributor_repo = match get_contributor_repo(&upstream_repo) {
+        Some(repo) => repo,
+        None => {
+            fork_check(&github, upstream_repo.clone()).await;
+            get_contributor_repo(&upstream_repo).unwrap()
+        }
+    };
 
     println!(
         r#"请选择当前要进行的贡献
@@ -256,7 +260,7 @@ fn main() {
         match user_input.trim() {
             "1" => {
                 valid_input = true;
-                select();
+                select(&contributor_repo, &github).await;
             }
             "2" | "3" | "4" => {
                 eprintln!("Not implemented yet.");
