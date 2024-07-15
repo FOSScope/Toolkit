@@ -125,4 +125,11 @@ impl RepoRule {
             git,
         }
     }
+
+    pub fn get_article_template(&self, article: &Article) -> String {
+        match &article.article_template {
+            Some(template) => template.clone(),
+            None => self.article_template.clone(),
+        }
+    }
 }

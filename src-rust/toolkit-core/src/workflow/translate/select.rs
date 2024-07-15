@@ -1,4 +1,7 @@
+use std::collections::HashMap;
+use handlebars::Handlebars;
 use crate::models::html_filter_rule::HTMLFilterRule;
+use crate::models::repo_rule::{Article, RepoRule};
 
 pub fn get_content(url: &str) -> Result<String, String> {
     let article_template = std::fs::read_to_string("rsc/translate_article_template.md");
@@ -41,4 +44,36 @@ pub fn get_content(url: &str) -> Result<String, String> {
     content.push_str(&md);
 
     Ok(content)
+}
+
+pub fn select_article(
+    repo_rule: &RepoRule,
+    article: &Article,
+    vars: &HashMap<&str, &str>
+) -> Result<String, String> {
+    let mut local_vars = vars.clone();
+
+    let url = local_vars.get("via").unwrap();
+
+    let content = get_content(url);
+    if content.is_err() {
+        return content;
+    }
+    let content = content.unwrap();
+
+    // The title is the only H1 header in the content
+    let title = content.split("\n").find(|line| line.starts_with("# ")).unwrap();
+
+    // The content is the content without the title
+    let content = content.replace(title, "");
+
+    // Add Info To Vars
+    local_vars.insert("title", title);
+    local_vars.insert("content", &content);
+
+    // Render the complete content
+    let handlebars = Handlebars::new();
+    Ok(
+        handlebars.render_template(&*repo_rule.get_article_template(article), &local_vars).unwrap()
+    )
 }
