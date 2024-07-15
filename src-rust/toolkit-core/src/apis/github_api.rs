@@ -167,4 +167,36 @@ impl GitHubApi {
             Err(_) => Err("Failed to parse fork response"),
         }
     }
+
+    /// Get the **decoded** content of a file in a repository.
+    ///
+    /// # Arguments
+    /// - `repo`: The repository to get the file from.
+    /// - `path`: The path to the file in the repository.
+    ///
+    /// # Returns
+    /// - `Result<String, &str>`
+    ///     - `Ok(String)`: The decoded content of the file.
+    ///     - `Err(&str)`: An error message indicating why the method failed.
+    pub async fn get_file_content(&self, repo: GitHubRepo, path: &str) -> Result<String, &str> {
+        let repo = self.octocrab.repos(repo.owner, repo.name);
+        let content = repo
+            .get_content()
+            .path(path)
+            .r#ref("main")
+            .send()
+            .await;
+        match content {
+            Ok(mut content) => {
+                let contents = content.take_items();
+                let c = &contents[0];
+                let decoded_content = c.decoded_content();
+                match decoded_content {
+                    Some(decoded_content) => Ok(decoded_content),
+                    None => Err("No file content found"),
+                }
+            },
+            Err(_) => Err("Failed to get file content"),
+        }
+    }
 }
