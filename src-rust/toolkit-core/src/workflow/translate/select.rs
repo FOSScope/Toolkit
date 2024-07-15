@@ -1,7 +1,5 @@
 use std::collections::HashMap;
-
-use handlebars::Handlebars;
-
+use handlebars::{Context, Handlebars, Helper, Output, RenderContext, RenderError};
 use crate::models::html_filter_rule::HTMLFilterRule;
 use crate::models::repo_rule::{Article, RepoRule};
 
@@ -57,9 +55,27 @@ pub async fn select_article(
     local_vars.insert("title", title);
     local_vars.insert("content", &content);
 
-    // Render the complete content
-    let handlebars = Handlebars::new();
+    // Get Article Template
+    let article_template = repo_rule.get_article_template(article_type);
+
+    let mut handlebars = Handlebars::new();
+    handlebars.set_strict_mode(false);
+    handlebars.register_helper(
+            "helperMissing",
+            Box::new(
+                |h: &Helper<'_>,
+                 _: &Handlebars<'_>,
+                 _: &Context,
+                 _: &mut RenderContext<'_, '_>,
+                 out: &mut dyn Output|
+                 -> Result<(), RenderError> {
+                    out.write(&format!("{{{{{}}}}}", h.name()))?;
+                    Ok(())
+                },
+            ),
+        );
+
     Ok(
-        handlebars.render_template(&*repo_rule.get_article_template(article_type), &local_vars).unwrap()
+        handlebars.render_template(&*article_template, &local_vars).unwrap()
     )
 }

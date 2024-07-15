@@ -23,7 +23,7 @@ The repository rule file will be written to a TOML file, following the structure
 # The article template to use when creating a new source file for an article.
 article_template = """---
 title: {{title}}
-date: <发布时间>
+date: {{release_date}}
 author:
   - fosscope-translation-team
   - {{translator}}
@@ -32,9 +32,8 @@ banner: {{cover_image}}
 cover: {{cover_image}}
 categories:
   - 翻译
-  - <类型>
-tags:
-  - <标签>
+  - {{category}}
+tags: {{tags}}
 authorInfo: |
   via: {{via}}
 
@@ -46,7 +45,7 @@ authorInfo: |
   本文由 [FOSScope翻译组](https://github.com/FOSScope/TranslateProject) 原创编译，[开源观察](https://fosscope.com/) 荣誉推出
 ---
 
-<!-- 所有在被 `<>` 标记的地方都需要填写对应信息 -->
+<!-- 所有以 `{{variable}}` 形式展现的内容都需要替换为实际内容 -->
 
 {{summary}}
 
