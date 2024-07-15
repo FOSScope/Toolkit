@@ -1,4 +1,6 @@
+use crate::apis::github_api::GitHubApi;
 use crate::models::action_command::ActionCommand;
+use crate::models::github_repo::GitHubRepo;
 
 /// A representation of an article type in the FOSScope repository rule, which defines the types of articles that can be found in the repository.
 ///
@@ -130,6 +132,40 @@ impl RepoRule {
         match &article.article_template {
             Some(template) => template.clone(),
             None => self.article_template.clone(),
+        }
+    }
+}
+
+/// Get the deserialized repository rule of a GitHub repository.
+/// The repository rule is stored in a file named `REPORULE` in the root directory of the repository.
+///
+/// # Arguments
+/// - `repo`: The GitHub repository to get the repository rule from.
+/// - `api`: The GitHub API wrapper that provides the method to get the file content.
+///
+/// # Returns
+/// - `Result<RepoRule, String>`: The deserialized repository rule if successful, an error message otherwise.
+pub async fn get_repo_rule(repo: &GitHubRepo, api: &GitHubApi) -> Result<RepoRule, String> {
+    let repo_rule_file_content = api.get_file_content(
+        repo,
+        "REPORULE",
+    ).await;
+
+    match repo_rule_file_content {
+        Ok(rule) => {
+            let deserialized: Result<RepoRule, _> = toml::from_str(&rule);
+            match deserialized {
+                Ok(rule) => Ok(rule),
+                Err(err) => {
+                    Err(format!("Failed to deserialize the repository rule: {}", err))
+                }
+            }
+        },
+        Err(e) => {
+            Err(format!(
+                "Failed to get the repository rule file for repo {}/{}. Error: {}",
+                repo.owner, repo.name, e
+            ))
         }
     }
 }

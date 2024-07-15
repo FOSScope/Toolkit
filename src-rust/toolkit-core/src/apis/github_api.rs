@@ -178,8 +178,8 @@ impl GitHubApi {
     /// - `Result<String, &str>`
     ///     - `Ok(String)`: The decoded content of the file.
     ///     - `Err(&str)`: An error message indicating why the method failed.
-    pub async fn get_file_content(&self, repo: GitHubRepo, path: &str) -> Result<String, &str> {
-        let repo = self.octocrab.repos(repo.owner, repo.name);
+    pub async fn get_file_content(&self, repo: &GitHubRepo, path: &str) -> Result<String, &str> {
+        let repo = self.octocrab.repos(repo.owner.clone(), repo.name.clone());
         let content = repo
             .get_content()
             .path(path)
