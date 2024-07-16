@@ -1,15 +1,14 @@
-use fosscopetoolkit_core::apis::github_api::GitHubApi;
-use fosscopetoolkit_core::models::github_repo::GitHubRepo;
-use fosscopetoolkit_core::models::repo_rule::get_repo_rule;
-use fosscopetoolkit_core::workflow::translate::select::select_article;
 use std::collections::HashMap;
+use std::fs;
 use std::io::{stdin, stdout, Write};
 
-use crate::config::get_config;
+use fosscopetoolkit_core::apis::GitHubApi;
+use fosscopetoolkit_core::models::GitHubRepo;
+use fosscopetoolkit_core::models::repo_rule::get_repo_rule;
+use fosscopetoolkit_core::workflow::translate::select::select_article;
 
-/**
- * Workflow for selecting new articles to translate.
- */
+use crate::config::config::get_config;
+
 pub async fn select(
     contributor_repo: &GitHubRepo,
     github: &GitHubApi,
@@ -68,7 +67,7 @@ pub async fn select(
 
     // TODO: Be able to allow the user to set the file name
     let file_name = "article.md";
-    std::fs::write(file_name, article).expect("无法写入文件");
+    fs::write(file_name, article).expect("无法写入文件");
     println!("已将 Markdown 内容写入文件：{}", file_name);
 
     let path_to_file = std::env::current_dir().unwrap().join(file_name);

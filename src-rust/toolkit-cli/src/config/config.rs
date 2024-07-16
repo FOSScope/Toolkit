@@ -1,4 +1,7 @@
-use std::io::{stdin, stdout, Write};
+use std::fs;
+use std::fs::File;
+use std::io::{BufReader, stdin, stdout, Write};
+use std::path::Path;
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Config {
@@ -14,8 +17,8 @@ impl Config {
 }
 
 pub fn get_config() -> Config {
-    let config_file = std::fs::File::open(".fosscope_toolkit/config.json").unwrap();
-    let reader = std::io::BufReader::new(config_file);
+    let config_file = File::open(".fosscope_toolkit/config.json").unwrap();
+    let reader = BufReader::new(config_file);
     let config: Result<Config, _> = serde_json::from_reader(reader);
     match config {
         Ok(config) => config,
@@ -27,12 +30,12 @@ pub fn get_config() -> Config {
 }
 
 pub fn initial_configuration_process() -> Result<Config, String> {
-    let dir_path = std::path::Path::new(".fosscope_toolkit");
+    let dir_path = Path::new(".fosscope_toolkit");
     if !dir_path.exists() {
-        std::fs::create_dir_all(".fosscope_toolkit").unwrap();
+        fs::create_dir_all(".fosscope_toolkit").unwrap();
     }
 
-    let file_path = std::path::Path::new(".fosscope_toolkit/config.json");
+    let file_path = Path::new(".fosscope_toolkit/config.json");
     if !file_path.exists() {
         let mut user_input = String::new();
         print!("Enter the terminal command that you use to open your text editor, \
@@ -44,7 +47,7 @@ pub fn initial_configuration_process() -> Result<Config, String> {
         let config_json = serde_json::to_string(&config);
         match config_json {
             Ok(config_json) => {
-                let mut file = std::fs::File::create(".fosscope_toolkit/config.json").unwrap();
+                let mut file = File::create(".fosscope_toolkit/config.json").unwrap();
                 file.write_all(config_json.as_bytes()).unwrap();
                 Ok(config)
             },

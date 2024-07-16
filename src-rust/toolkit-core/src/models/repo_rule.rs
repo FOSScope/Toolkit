@@ -1,6 +1,6 @@
-use crate::apis::github_api::GitHubApi;
-use crate::models::action_command::ActionCommand;
-use crate::models::github_repo::GitHubRepo;
+use crate::apis::GitHubApi;
+use crate::models::ActionCommand;
+use crate::models::GitHubRepo;
 
 /// A representation of an article type in the FOSScope repository rule, which defines the types of articles that can be found in the repository.
 ///
