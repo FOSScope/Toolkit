@@ -1,5 +1,5 @@
-use octocrab::Octocrab;
 use fosscopetoolkit_core::apis::github_api::GitHubApi;
+use octocrab::Octocrab;
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct GitHubAccount {

@@ -1,4 +1,5 @@
+pub use config::*;
+
 pub mod github;
 mod config;
 
-pub use config::*;

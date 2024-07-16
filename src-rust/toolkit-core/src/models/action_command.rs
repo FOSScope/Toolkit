@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use handlebars::Handlebars;
+use std::collections::HashMap;
 
 #[derive(PartialEq, Eq, Debug)]
 pub struct ActionCommand {

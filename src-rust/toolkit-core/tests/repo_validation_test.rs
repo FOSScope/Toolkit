@@ -1,13 +1,12 @@
-mod mock_error;
-
 use mock_error::setup_error_handler;
-use octocrab::models::{Repository};
-use octocrab::{Octocrab};
+use octocrab::Octocrab;
 use serde::{Deserialize, Serialize};
 use wiremock::{
     matchers::{method, path},
     Mock, MockServer, ResponseTemplate,
 };
+
+mod mock_error;
 
 // This is a fake page that we can use to deserialize the response from the GitHub API.
 #[derive(Serialize, Deserialize)]
@@ -41,8 +40,10 @@ fn setup_octocrab(uri: &str) -> Octocrab {
 
 #[cfg(test)]
 mod tests {
+    use octocrab::models::Repository;
     use fosscopetoolkit_core::apis::github_api::GitHubApi;
     use fosscopetoolkit_core::models::github_repo::GitHubRepo;
+
     use super::*;
 
     #[tokio::test]

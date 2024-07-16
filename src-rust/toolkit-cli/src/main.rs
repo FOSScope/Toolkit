@@ -1,7 +1,8 @@
-use std::io::{stdin, stdout, Write};
 use fosscopetoolkit_core::{get_contributor_repo, set_contributor_repo};
 use fosscopetoolkit_core::apis::github_api::GitHubApi;
 use fosscopetoolkit_core::models::github_repo::GitHubRepo;
+use std::io::{stdin, stdout, Write};
+
 use crate::config::github::github_account::GitHubAccount;
 use crate::config::initial_configuration_process;
 use crate::workflow::select::select;

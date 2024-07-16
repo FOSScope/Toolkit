@@ -1,11 +1,10 @@
+use mock_error::setup_error_handler;
 use octocrab::Octocrab;
 use serde::{Deserialize, Serialize};
 use wiremock::{
     matchers::{method, path},
     Mock, MockServer, ResponseTemplate,
 };
-
-use mock_error::setup_error_handler;
 
 mod mock_error;
 
@@ -41,12 +40,11 @@ fn setup_octocrab(uri: &str) -> Octocrab {
 
 #[cfg(test)]
 mod tests {
-    use octocrab::models::repos::Content;
-
     use fosscopetoolkit_core::apis::github_api::GitHubApi;
-    use fosscopetoolkit_core::models::github_repo::GitHubRepo;
     use fosscopetoolkit_core::models::action_command::ActionCommand;
-    use fosscopetoolkit_core::models::repo_rule::{Article, Action, GitRule, RepoRule, get_repo_rule};
+    use fosscopetoolkit_core::models::github_repo::GitHubRepo;
+    use fosscopetoolkit_core::models::repo_rule::{Action, Article, get_repo_rule, GitRule, RepoRule};
+    use octocrab::models::repos::Content;
 
     use super::*;
 
