@@ -1,20 +1,16 @@
-use fosscopetoolkit_core::{get_contributor_repo, set_contributor_repo};
-use fosscopetoolkit_core::apis::github_api::GitHubApi;
-use fosscopetoolkit_core::models::github_repo::GitHubRepo;
 use std::io::{stdin, stdout, Write};
 
-use crate::config::github::github_account::GitHubAccount;
-use crate::config::initial_configuration_process;
-use crate::workflow::select::select;
+use fosscopetoolkit_core::apis::GitHubApi;
+use fosscopetoolkit_core::models::GitHubRepo;
+use fosscopetoolkit_core::{get_contributor_repo, set_contributor_repo};
 
-mod workflow;
+use crate::config::config::initial_configuration_process;
+use crate::config::github::GitHubAccount;
+use crate::workflow::select;
+
 mod config;
+mod workflow;
 
-/**
-  * The process of automatically creating a forked repository or using an existing forked repository.
-  * Returns true if a forked repository is created or an existing forked repository is used.
-  * Returns false if this process needs to be repeated.
-  */
 async fn fork_creation_process(github: &GitHubApi, upstream_repo: &GitHubRepo) -> bool {
     print!("Do you want to use another fork or create a new fork? (y/n) ");
     let mut user_input = String::new();
@@ -93,9 +89,6 @@ async fn fork_creation_process(github: &GitHubApi, upstream_repo: &GitHubRepo) -
     }
 }
 
-/**
- * Automatically fork the upstream repository or use another forked repository.
- */
 async fn create_fork(github: &GitHubApi, upstream_repo: GitHubRepo) {
     loop {
         let result = fork_creation_process(github, &upstream_repo).await;
@@ -105,9 +98,6 @@ async fn create_fork(github: &GitHubApi, upstream_repo: GitHubRepo) {
     }
 }
 
-/**
- * Check if the user has a forked repository of the upstream repository.
- */
 async fn fork_check(github: &GitHubApi, upstream_repo: GitHubRepo) {
     let user_fork = github.get_user_fork(upstream_repo.clone()).await;
     match user_fork {

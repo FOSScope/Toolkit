@@ -1,8 +1,10 @@
-use handlebars::{Context, Handlebars, Helper, Output, RenderContext, RenderError};
 use std::collections::HashMap;
 
-use crate::models::html_filter_rule::HTMLFilterRule;
-use crate::models::repo_rule::{Article, RepoRule};
+use handlebars::{Context, Handlebars, Helper, Output, RenderContext, RenderError};
+
+use crate::models::HTMLFilterRule;
+use crate::models::RepoRule;
+use crate::models::repo_rule::Article;
 
 pub async fn get_content(url: &str) -> Result<String, String> {
     let website = url::Url::parse(url);

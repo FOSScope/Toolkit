@@ -1,6 +1,6 @@
 use std::io::Write;
 
-use crate::models::github_repo::GitHubRepo;
+use crate::models::GitHubRepo;
 
 pub mod apis;
 pub mod models;
