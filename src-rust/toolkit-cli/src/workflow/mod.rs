@@ -1,3 +1,4 @@
+pub use select::select;
+
 mod select;
 
-pub use select::select;
