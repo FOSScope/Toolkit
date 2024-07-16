@@ -1,0 +1,18 @@
+{
+  "name": "REPORULE",
+  "path": "REPORULE",
+  "sha": "0cd5ffb0934f299f18ae5da94a126591732dddae",
+  "size": 1532,
+  "url": "https://api.github.com/repos/FOSScope/TranslateProject/contents/REPORULE?ref=main",
+  "html_url": "https://github.com/FOSScope/TranslateProject/blob/main/REPORULE",
+  "git_url": "https://api.github.com/repos/FOSScope/TranslateProject/git/blobs/0cd5ffb0934f299f18ae5da94a126591732dddae",
+  "download_url": "https://raw.githubusercontent.com/FOSScope/TranslateProject/main/REPORULE",
+  "type": "file",
+  "content": "YXJ0aWNsZV90ZW1wbGF0ZSA9ICIiIi0tLQp0aXRsZToge3t0aXRsZX19CmRh\ndGU6IDzlj5HluIPml7bpl7Q+CmF1dGhvcjoKICAtIGZvc3Njb3BlLXRyYW5z\nbGF0aW9uLXRlYW0KICAtIHt7dHJhbnNsYXRvcn19CiAgLSB7e3Byb29mcmVh\nZGVyfX0KYmFubmVyOiB7e2NvdmVyX2ltYWdlfX0KY292ZXI6IHt7Y292ZXJf\naW1hZ2V9fQpjYXRlZ29yaWVzOgogIC0g57+76K+RCiAgLSA857G75Z6LPgp0\nYWdzOgogIC0gPOagh+etvj4KYXV0aG9ySW5mbzogfAogIHZpYToge3t2aWF9\nfQoKICDkvZzogIXvvJpbe3thdXRob3J9fV0oe3thdXRob3JfbGlua319KQog\nIOmAiemimO+8mlt7e3NlbGVjdG9yfX1dKGh0dHBzOi8vZ2l0aHViLmNvbS97\ne3NlbGVjdG9yfX0pCiAg6K+R6ICF77yaW3t7dHJhbnNsYXRvcn19XShodHRw\nczovL2dpdGh1Yi5jb20ve3t0cmFuc2xhdG9yfX0pCiAg5qCh5a+577yaW3t7\ncHJvb2ZyZWFkZXJ9fV0oaHR0cHM6Ly9naXRodWIuY29tL3t7cHJvb2ZyZWFk\nZXJ9fSkKCiAg5pys5paH55SxIFtGT1NTY29wZee/u+ivkee7hF0oaHR0cHM6\nLy9naXRodWIuY29tL0ZPU1Njb3BlL1RyYW5zbGF0ZVByb2plY3QpIOWOn+WI\nm+e8luivke+8jFvlvIDmupDop4Llr59dKGh0dHBzOi8vZm9zc2NvcGUuY29t\nLykg6I2j6KqJ5o6o5Ye6Ci0tLQoKPCEtLSDmiYDmnInlnKjooqsgYDw+YCDm\noIforrDnmoTlnLDmlrnpg73pnIDopoHloavlhpnlr7nlupTkv6Hmga8gLS0+\nCgp7e3N1bW1hcnl9fQoKPCEtLSBtb3JlIC0tPgoKe3tjb250ZW50fX0KIiIi\nCgpbW2FydGljbGVzXV0KdHlwZSA9ICJuZXdzIgpkZXNjcmlwdGlvbiA9ICLm\nlrDpl7siCmRpcmVjdG9yeSA9ICJ7e3N0ZXB9fS9uZXdzIgoKW1thcnRpY2xl\nc11dCnR5cGUgPSAidGVjaCIKZGVzY3JpcHRpb24gPSAi5oqA5pyvIgpkaXJl\nY3RvcnkgPSAie3tzdGVwfX0vdGVjaCIKCltbYXJ0aWNsZXNdXQp0eXBlID0g\nInRhbGsiCmRlc2NyaXB0aW9uID0gIuivhOiuuiIKZGlyZWN0b3J5ID0gInt7\nc3RlcH19L3RhbGsiCgojIyMgQ29uZmlndXJhdGlvbnMgQmVsb3cgYXJlIE5P\nVCB1c2VkIGZvciBub3cgYW5kICoqbWF5IG5vdCByZXByZXNlbnQgdGhlIGZp\nbmFsIHZlcnNpb24gb2YgdGhlIHJlbGF0ZWQgcnVsZSBkZWZpbml0aW9ucyoq\nLgoKW1thY3Rpb25zXV0KYWN0aW9uID0gInNlbGVjdCIKZGVzY3JpcHRpb24g\nPSAiU2VsZWN0IGFuIGFydGljbGUgdG8gdHJhbnNsYXRlLiIKY29tbWFuZCA9\nICJUT1VDSCBzb3VyY2Uve3thcnRpY2xlX2lkfX0ubWQiCgpbW2FjdGlvbnNd\nXQphY3Rpb24gPSAidHJhbnNsYXRlIgpkZXNjcmlwdGlvbiA9ICJUcmFuc2xh\ndGUgdGhlIGFydGljbGUuIgpjb21tYW5kID0gIk1WIHNvdXJjZS97e2FydGlj\nbGVfaWR9fS5tZCB0cmFuc2xhdGVkL3t7YXJ0aWNsZV9pZH19Lm1kIgoKW2dp\ndF0KYnJhbmNoX25hbWluZyA9ICJ7e2FjdGlvbl9uYW1lfX0ve3t0eXBlX25h\nbWV9fS97e2FydGljbGVfaWR9fSIKY29tbWl0X21lc3NhZ2UgPSAiW3t7YWN0\naW9uX2Rlc2N9fV1be3t0eXBlX2Rlc2N9fV06IHt7YXJ0aWNsZV90aXRsZX19\nIgo=\n",
+  "encoding": "base64",
+  "_links": {
+    "self": "https://api.github.com/repos/FOSScope/TranslateProject/contents/REPORULE?ref=main",
+    "git": "https://api.github.com/repos/FOSScope/TranslateProject/git/blobs/0cd5ffb0934f299f18ae5da94a126591732dddae",
+    "html": "https://github.com/FOSScope/TranslateProject/blob/main/REPORULE"
+  }
+}

@@ -27,6 +27,11 @@ pub fn get_config() -> Config {
 }
 
 pub fn initial_configuration_process() -> Result<Config, String> {
+    let dir_path = std::path::Path::new(".fosscope_toolkit");
+    if !dir_path.exists() {
+        std::fs::create_dir_all(".fosscope_toolkit").unwrap();
+    }
+
     let file_path = std::path::Path::new(".fosscope_toolkit/config.json");
     if !file_path.exists() {
         let mut user_input = String::new();
