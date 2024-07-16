@@ -1,10 +1,9 @@
-use std::collections::HashMap;
-use std::io::{stdin, stdout, Write};
-
 use fosscopetoolkit_core::apis::github_api::GitHubApi;
 use fosscopetoolkit_core::models::github_repo::GitHubRepo;
 use fosscopetoolkit_core::models::repo_rule::get_repo_rule;
 use fosscopetoolkit_core::workflow::translate::select::select_article;
+use std::collections::HashMap;
+use std::io::{stdin, stdout, Write};
 
 use crate::config::get_config;
 

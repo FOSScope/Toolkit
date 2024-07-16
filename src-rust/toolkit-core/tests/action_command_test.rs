@@ -1,6 +1,6 @@
 mod tests {
-    use std::collections::HashMap;
     use fosscopetoolkit_core::models::action_command::ActionCommand;
+    use std::collections::HashMap;
 
     #[test]
     fn cp() {

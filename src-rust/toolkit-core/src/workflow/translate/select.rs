@@ -1,5 +1,6 @@
-use std::collections::HashMap;
 use handlebars::{Context, Handlebars, Helper, Output, RenderContext, RenderError};
+use std::collections::HashMap;
+
 use crate::models::html_filter_rule::HTMLFilterRule;
 use crate::models::repo_rule::{Article, RepoRule};
 

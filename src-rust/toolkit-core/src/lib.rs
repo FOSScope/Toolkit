@@ -1,4 +1,5 @@
 use std::io::Write;
+
 use crate::models::github_repo::GitHubRepo;
 
 pub mod apis;
