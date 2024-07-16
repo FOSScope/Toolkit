@@ -160,7 +160,7 @@ pub async fn get_repo_rule(repo: &GitHubRepo, api: &GitHubApi) -> Result<RepoRul
                     Err(format!("Failed to deserialize the repository rule: {}", err))
                 }
             }
-        },
+        }
         Err(e) => {
             Err(format!(
                 "Failed to get the repository rule file for repo {}/{}. Error: {}",

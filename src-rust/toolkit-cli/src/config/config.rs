@@ -40,7 +40,7 @@ pub fn initial_configuration_process() -> Result<Config, String> {
         let mut user_input = String::new();
         print!("Enter the terminal command that you use to open your text editor, \
         or enter nothing to not use any terminal text editor: ");
-        let _= stdout().flush();
+        let _ = stdout().flush();
         stdin().read_line(&mut user_input).unwrap_or(0);
         let user_input = user_input.trim().to_string();
         let config = Config::new(user_input);
@@ -50,10 +50,9 @@ pub fn initial_configuration_process() -> Result<Config, String> {
                 let mut file = File::create(".fosscope_toolkit/config.json").unwrap();
                 file.write_all(config_json.as_bytes()).unwrap();
                 Ok(config)
-            },
+            }
             Err(_) => Err("Failed to create the configuration file.".to_string())
         }
-
     } else {
         Ok(get_config())
     }

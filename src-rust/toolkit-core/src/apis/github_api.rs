@@ -26,7 +26,7 @@ impl GitHubApi {
     ///
     /// # Returns
     /// - `Result<String, &str>`: The username of the currently signed-in GitHub user if successful, an error message otherwise.
-    pub async fn get_user(&self) -> Result<String, &str>{
+    pub async fn get_user(&self) -> Result<String, &str> {
         let user = self.octocrab.current().user().await;
         match user {
             Ok(user) => Ok(user.login),
@@ -34,7 +34,7 @@ impl GitHubApi {
                 Err(
                     "Failed to get the username of the currently signed in GitHub user. Could be due to an invalid token."
                 )
-            },
+            }
         }
     }
 
@@ -47,7 +47,7 @@ impl GitHubApi {
         match user {
             Ok(user) => {
                 user == self.username
-            },
+            }
             Err(_) => false,
         }
     }
@@ -163,7 +163,7 @@ impl GitHubApi {
             Ok(repo) => {
                 let repo: Repository = repo;
                 Ok(GitHubRepo::new(repo.owner.unwrap().login, repo.name))
-            },
+            }
             Err(_) => Err("Failed to parse fork response"),
         }
     }
@@ -195,7 +195,7 @@ impl GitHubApi {
                     Some(decoded_content) => Ok(decoded_content),
                     None => Err("No file content found"),
                 }
-            },
+            }
             Err(_) => Err("Failed to get file content"),
         }
     }

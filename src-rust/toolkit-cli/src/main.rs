@@ -14,7 +14,7 @@ mod workflow;
 async fn fork_creation_process(github: &GitHubApi, upstream_repo: &GitHubRepo) -> bool {
     print!("Do you want to use another fork or create a new fork? (y/n) ");
     let mut user_input = String::new();
-    let _= stdout().flush();
+    let _ = stdout().flush();
     stdin().read_line(&mut user_input).unwrap_or(0);
     match user_input.to_lowercase().trim() {
         "y" | "yes" => {
@@ -45,7 +45,7 @@ async fn fork_creation_process(github: &GitHubApi, upstream_repo: &GitHubRepo) -
                     println!("The repo {} is a fork of the upstream repository.", fork_repo.get_full_name());
                     print!("Do you want to use this forked repository as the contributor repository? (y/n) ");
                     let mut user_input = String::new();
-                    let _= stdout().flush();
+                    let _ = stdout().flush();
                     stdin().read_line(&mut user_input).unwrap_or(0);
                     match user_input.to_lowercase().trim() {
                         "y" | "yes" => {
@@ -61,7 +61,7 @@ async fn fork_creation_process(github: &GitHubApi, upstream_repo: &GitHubRepo) -
                 Err("Repository does not exist") => {
                     // Create a new forked repository and use it as the contributor repository.
                     let fork = github.create_fork(
-                        fork_repo.clone(), upstream_repo.clone()
+                        fork_repo.clone(), upstream_repo.clone(),
                     ).await;
                     match fork {
                         Ok(fork) => {
@@ -106,7 +106,7 @@ async fn fork_check(github: &GitHubApi, upstream_repo: GitHubRepo) {
             println!("Your fork repo have the name: {}", fork.get_full_name());
             print!("Do you want to use this forked repository as the contributor repository? (y/n) ");
             let mut user_input = String::new();
-            let _= stdout().flush();
+            let _ = stdout().flush();
             stdin().read_line(&mut user_input).unwrap_or(0);
             match user_input.to_lowercase().trim() {
                 "y" | "yes" => {
@@ -153,12 +153,12 @@ async fn login() -> GitHubApi {
             let mut user_input = String::new();
             user_input.clear();
             print!("Please enter your GitHub username: ");
-            let _= stdout().flush();
+            let _ = stdout().flush();
             stdin().read_line(&mut user_input).unwrap_or(0);
             let username = user_input.trim().to_string();
             user_input.clear();
             print!("Please enter your GitHub personal access token: ");
-            let _= stdout().flush();
+            let _ = stdout().flush();
             stdin().read_line(&mut user_input).unwrap_or(0);
             let token = user_input.trim().to_string();
             let github_account = GitHubAccount::new(username, token);
@@ -193,7 +193,7 @@ async fn login() -> GitHubApi {
 
 #[tokio::main]
 async fn main() {
-    let _= initial_configuration_process();
+    let _ = initial_configuration_process();
 
     let github = login().await;
 

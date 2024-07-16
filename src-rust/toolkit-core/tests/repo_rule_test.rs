@@ -64,7 +64,7 @@ mod tests {
                 owner: "FOSScope".to_string(),
                 name: "TranslateProject".to_string(),
             },
-            &github
+            &github,
         ).await;
         assert!(rule.is_ok());
 
@@ -107,10 +107,10 @@ authorInfo: |
         let talk: Article = Article::new("talk".to_string(), "评论".to_string(), "{{step}}/talk".to_string(), None);
 
         let select: Action = Action::new("select".to_string(), "Select an article to translate.".to_string(),
-            ActionCommand::new("TOUCH".to_string(), vec!["source/{{article_id}}.md".to_string()])
+                                         ActionCommand::new("TOUCH".to_string(), vec!["source/{{article_id}}.md".to_string()]),
         );
         let translate: Action = Action::new("translate".to_string(), "Translate the article.".to_string(),
-            ActionCommand::new("MV".to_string(), vec!["source/{{article_id}}.md".to_string(), "translated/{{article_id}}.md".to_string()])
+                                            ActionCommand::new("MV".to_string(), vec!["source/{{article_id}}.md".to_string(), "translated/{{article_id}}.md".to_string()]),
         );
         let git_rule: GitRule = GitRule::new("{{action_name}}/{{type_name}}/{{article_id}}".to_string(), "[{{action_desc}}][{{type_desc}}]: {{article_title}}".to_string());
 
