@@ -1,10 +1,11 @@
-use mock_error::setup_error_handler;
 use octocrab::Octocrab;
 use serde::{Deserialize, Serialize};
 use wiremock::{
     matchers::{method, path},
     Mock, MockServer, ResponseTemplate,
 };
+
+use mock_error::setup_error_handler;
 
 mod mock_error;
 
@@ -41,6 +42,7 @@ fn setup_octocrab(uri: &str) -> Octocrab {
 #[cfg(test)]
 mod tests {
     use octocrab::models::UserProfile;
+
     use fosscopetoolkit_core::apis::github_api::GitHubApi;
 
     use super::*;

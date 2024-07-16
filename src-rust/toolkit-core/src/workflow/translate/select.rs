@@ -3,8 +3,8 @@ use std::collections::HashMap;
 use handlebars::{Context, Handlebars, Helper, Output, RenderContext, RenderError};
 
 use crate::models::HTMLFilterRule;
-use crate::models::RepoRule;
 use crate::models::repo_rule::Article;
+use crate::models::RepoRule;
 
 pub async fn get_content(url: &str) -> Result<String, String> {
     let website = url::Url::parse(url);
