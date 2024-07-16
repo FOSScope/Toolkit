@@ -27,7 +27,7 @@ pub async fn get_content(url: &str) -> Result<String, String> {
     let filtered_html = libhtmlfilter::get_filtered_html_fullurl_removeref(
         url,
         &*html_filter_rule.tags,
-        &*html_filter_rule.classes
+        &*html_filter_rule.classes,
     ).await;
 
     Ok(html2md::parse_html(&filtered_html).trim().to_string())
@@ -36,7 +36,7 @@ pub async fn get_content(url: &str) -> Result<String, String> {
 pub async fn select_article(
     repo_rule: &RepoRule,
     article_type: &Article,
-    vars: &HashMap<&str, &str>
+    vars: &HashMap<&str, &str>,
 ) -> Result<String, String> {
     let mut local_vars = vars.clone();
 
@@ -64,19 +64,19 @@ pub async fn select_article(
     let mut handlebars = Handlebars::new();
     handlebars.set_strict_mode(false);
     handlebars.register_helper(
-            "helperMissing",
-            Box::new(
-                |h: &Helper<'_>,
-                 _: &Handlebars<'_>,
-                 _: &Context,
-                 _: &mut RenderContext<'_, '_>,
-                 out: &mut dyn Output|
-                 -> Result<(), RenderError> {
-                    out.write(&format!("{{{{{}}}}}", h.name()))?;
-                    Ok(())
-                },
-            ),
-        );
+        "helperMissing",
+        Box::new(
+            |h: &Helper<'_>,
+             _: &Handlebars<'_>,
+             _: &Context,
+             _: &mut RenderContext<'_, '_>,
+             out: &mut dyn Output|
+             -> Result<(), RenderError> {
+                out.write(&format!("{{{{{}}}}}", h.name()))?;
+                Ok(())
+            },
+        ),
+    );
 
     Ok(
         handlebars.render_template(&*article_template, &local_vars).unwrap()

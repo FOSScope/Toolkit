@@ -25,14 +25,14 @@ impl GitHubAccount {
             Ok(octocrab) => {
                 let github = GitHubApi::new(
                     self.username.clone(),
-                    octocrab
+                    octocrab,
                 );
                 if !github.verify_user().await {
                     Err("Failed to verify the GitHub user. Check your token.")
                 } else {
                     Ok(github)
                 }
-            },
+            }
             Err(_) => Err("Failed to login to GitHub. Check your token.")
         }
     }

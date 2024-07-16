@@ -142,7 +142,7 @@ mod tests {
             GitHubRepo {
                 owner: "octocat".to_string(),
                 name: "Hello-World".to_string(),
-            }
+            },
         ).await;
 
         assert_eq!(result, Ok(GitHubRepo {

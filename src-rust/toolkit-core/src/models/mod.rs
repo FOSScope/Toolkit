@@ -7,4 +7,3 @@ mod github_repo;
 pub mod repo_rule;
 mod html_filter_rule;
 mod action_command;
-
