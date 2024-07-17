@@ -1,3 +1,5 @@
+use std::fmt::format;
+
 use octocrab::models::Repository;
 use octocrab::Octocrab;
 use serde_json;
@@ -257,7 +259,7 @@ impl GitHubApi {
             Err(e) => {
                 let error_message = format!("Failed to parse commit information of the repository: {:?}", e);
                 return Err(error_message);
-            },
+            }
         }
     }
 
@@ -317,6 +319,39 @@ impl GitHubApi {
             let error_message = format!(
                 "Failed to create a file {:?} in the repository. Error: {:?}",
                 path, response.err().unwrap()
+            );
+            return Err(error_message);
+        }
+        Ok(())
+    }
+
+    pub async fn create_pull_request(
+        &self,
+        upstream_repo: &GitHubRepo,
+        contributor_repo: &GitHubRepo,
+        title: &str,
+        head: &str,
+        base: &str,
+    ) -> Result<(), String> {
+        let head = if upstream_repo == contributor_repo {
+            head.to_string()
+        } else {
+            format!("{}:{}", contributor_repo.owner.clone(), head)
+        };
+
+        let response = self.octocrab.pulls(upstream_repo.owner.clone(), upstream_repo.name.clone())
+            .create(
+                title,
+                &head,
+                base,
+            )
+            .send()
+            .await;
+
+        if response.is_err() {
+            let error_message = format!(
+                "Failed to create a pull request from {:?} to {:?} in the repository. Error: {:?}",
+                head, base, response.err().unwrap()
             );
             return Err(error_message);
         }

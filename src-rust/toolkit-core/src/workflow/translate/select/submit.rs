@@ -43,3 +43,33 @@ pub async fn commit(
 
     Ok(())
 }
+
+pub async fn create_pr(
+    github: &GitHubApi,
+    upstream_repo: &GitHubRepo,
+    contributor_repo: &GitHubRepo,
+    repo_rule: &RepoRule,
+    vars: &HashMap<&str, &str>,
+) -> Result<(), String> {
+    let mut local_vars = vars.clone();
+    local_vars.insert("action_name", "select");
+    local_vars.insert("action_desc", "选题");
+    local_vars.insert("step", "sources");
+
+    let handlebars = Handlebars::new();
+    let branch_name = handlebars.render_template(&*repo_rule.git.branch_naming, &local_vars).unwrap();
+    let pr_title = handlebars.render_template(&*repo_rule.git.commit_message, &local_vars).unwrap();
+
+    let r = github.create_pull_request(
+        upstream_repo,
+        contributor_repo,
+        &pr_title,
+        &branch_name,
+        &repo_rule.git.base,
+    ).await;
+    if r.is_err() {
+        return Err(r.err().unwrap());
+    }
+
+    Ok(())
+}

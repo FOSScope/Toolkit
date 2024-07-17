@@ -14,8 +14,9 @@ use fosscopetoolkit_core::workflow;
 /// - `contributor_repo`: The repository that the user is contributing to.
 /// - `github`: A pointer to the GitHub API wrapper.
 pub async fn select(
-    contributor_repo: &GitHubRepo,
     github: &GitHubApi,
+    upstream_repo: &GitHubRepo,
+    contributor_repo: &GitHubRepo,
 ) {
     // Get the username of the currently signed in GitHub user.
     let user = github.get_user().await;
@@ -136,5 +137,15 @@ pub async fn select(
     }
     println!("文章已提交到您的分支。");
 
-    // TODO: Follow up process of creating a pull request.
+    // Create a pull request to the Translation Project repository.
+    let pr = workflow::translate::select::submit::create_pr(
+        github, upstream_repo, contributor_repo, &repo_rule, &vars
+    ).await;
+    if pr.is_err() {
+        eprintln!("Failed to create pull request: {:?}", pr.err());
+        return;
+    }
+    println!("Pull Request 已创建。");
+
+    println!("您的选题已提交成功！");
 }

@@ -248,7 +248,9 @@ async fn main() {
         match user_input.trim() {
             "1" => {
                 valid_input = true;
-                workflow::translate::select::select(&contributor_repo, &github).await;
+                workflow::translate::select::select(
+                    &github, &upstream_repo, &contributor_repo
+                ).await;
             }
             "2" | "3" | "4" => {
                 eprintln!("Not implemented yet.");
