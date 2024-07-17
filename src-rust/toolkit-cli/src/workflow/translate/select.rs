@@ -75,6 +75,8 @@ pub async fn select(
     let mut vars = HashMap::new();
     vars.insert("via", url); // The URL of the article
     vars.insert("selector", &user); // The username of the currently signed in GitHub user (as the article selector)
+    vars.insert("type_name", &article_type.r#type);
+    vars.insert("type_desc", &article_type.description);
 
     // Get the article content in Markdown format, rendered using the data in the variables.
     let article = workflow::translate::select::fetch(
@@ -88,6 +90,7 @@ pub async fn select(
 
     let title = article.1;
     let content = article.0;
+    vars.insert("article_title", &title);
 
     // The article ID is the original publishing date, dash (`-`), followed by the
     // title in all lowercase, with spaces replaced by dashes (`-`), and with all non-alphanumeric
@@ -107,7 +110,7 @@ pub async fn select(
     println!("已将 Markdown 内容写入文件：{}", &file_name);
 
     // Open the file in the user's text editor for them to edit the article if needed.
-    let path_to_file = std::env::current_dir().unwrap().join(file_name);
+    let path_to_file = std::env::current_dir().unwrap().join(&file_name);
     let editor = &config.editor;
     let _ = std::process::Command::new(editor)
         .arg(path_to_file)
@@ -120,5 +123,18 @@ pub async fn select(
     println!("如果您已经完成了编辑，请输入任何内容以继续。");
     let _ = stdin().read_line(&mut String::new());
 
-    // TODO: Follow up process like commiting the changes and creating a pull request.
+    // Get the content of the file after the user has edited it.
+    let content = fs::read_to_string(&file_name).expect("无法读取文章源文件");
+
+    // Commit the article to the user's fork of the Translation Project repository.
+    let commit = workflow::translate::select::submit::commit(
+        github, contributor_repo, &file_name, &content, article_type, &repo_rule, &vars
+    ).await;
+    if commit.is_err() {
+        eprintln!("Failed to commit article: {:?}", commit.err());
+        return;
+    }
+    println!("文章已提交到您的分支。");
+
+    // TODO: Follow up process of creating a pull request.
 }
