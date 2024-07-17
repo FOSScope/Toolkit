@@ -45,7 +45,7 @@ mod tests {
 
     use fosscopetoolkit_core::apis::GitHubApi;
     use fosscopetoolkit_core::models::GitHubRepo;
-    use fosscopetoolkit_core::models::repo_rule::{Action, Article, get_repo_rule, GitRule};
+    use fosscopetoolkit_core::models::repo_rule::{Article, get_repo_rule, GitRule};
     use fosscopetoolkit_core::models::RepoRule;
 
     use super::*;

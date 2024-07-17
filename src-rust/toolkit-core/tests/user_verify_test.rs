@@ -43,7 +43,7 @@ fn setup_octocrab(uri: &str) -> Octocrab {
 mod tests {
     use octocrab::models::UserProfile;
 
-    use fosscopetoolkit_core::apis::github_api::GitHubApi;
+    use fosscopetoolkit_core::apis::GitHubApi;
 
     use super::*;
 
