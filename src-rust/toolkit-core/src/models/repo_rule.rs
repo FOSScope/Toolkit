@@ -1,5 +1,4 @@
 use crate::apis::GitHubApi;
-use crate::models::ActionCommand;
 use crate::models::GitHubRepo;
 
 /// A representation of an article type in the FOSScope repository rule, which defines the types of articles that can be found in the repository.
@@ -33,35 +32,6 @@ impl Article {
             description,
             directory,
             article_template,
-        }
-    }
-}
-
-/// A representation of an action in the FOSScope repository rule, which actions that can be performed on the repository.
-///
-/// # Fields
-/// - `action`: The action name. e.g. `select`, `translate`, `review`.
-/// - `description`: The description of the action. e.g. `Select an article to translate`.
-/// - `command`: The command that should be executed when the action is performed. e.g. `TOUCH source/{{article_id}}.md`.
-///
-/// Check the [related design documentation](https://github.com/FOSScope/Toolkit/blob/main/docs/dev/design/repo-rule.md)
-/// and [RepoRule](struct.RepoRule.html) definition for more information.
-#[derive(PartialEq, Eq, Debug, serde::Deserialize)]
-pub struct Action {
-    /// The name of the action.
-    pub action: String,
-    /// The description of the action.
-    pub description: String,
-    /// The command that should be executed when the action is performed.
-    pub command: ActionCommand,
-}
-
-impl Action {
-    pub fn new(action: String, description: String, command: ActionCommand) -> Self {
-        Self {
-            action,
-            description,
-            command,
         }
     }
 }
@@ -112,18 +82,15 @@ pub struct RepoRule {
     pub article_template: String,
     /// The list of types of articles that can be found in the repository.
     pub articles: Vec<Article>,
-    /// The list of actions that can be performed on the repository.
-    pub actions: Vec<Action>,
     /// The Git rule that defines how the repository should be managed.
     pub git: GitRule,
 }
 
 impl RepoRule {
-    pub fn new(article_template: String, articles: Vec<Article>, actions: Vec<Action>, git: GitRule) -> Self {
+    pub fn new(article_template: String, articles: Vec<Article>, git: GitRule) -> Self {
         Self {
             article_template,
             articles,
-            actions,
             git,
         }
     }

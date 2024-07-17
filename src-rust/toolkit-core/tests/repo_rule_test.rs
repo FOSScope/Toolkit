@@ -43,10 +43,10 @@ fn setup_octocrab(uri: &str) -> Octocrab {
 mod tests {
     use octocrab::models::repos::Content;
 
-    use fosscopetoolkit_core::apis::github_api::GitHubApi;
-    use fosscopetoolkit_core::models::action_command::ActionCommand;
-    use fosscopetoolkit_core::models::github_repo::GitHubRepo;
-    use fosscopetoolkit_core::models::repo_rule::{Action, Article, get_repo_rule, GitRule, RepoRule};
+    use fosscopetoolkit_core::apis::GitHubApi;
+    use fosscopetoolkit_core::models::GitHubRepo;
+    use fosscopetoolkit_core::models::repo_rule::{Action, Article, get_repo_rule, GitRule};
+    use fosscopetoolkit_core::models::RepoRule;
 
     use super::*;
 
@@ -106,15 +106,9 @@ authorInfo: |
         let tech: Article = Article::new("tech".to_string(), "技术".to_string(), "{{step}}/tech".to_string(), None);
         let talk: Article = Article::new("talk".to_string(), "评论".to_string(), "{{step}}/talk".to_string(), None);
 
-        let select: Action = Action::new("select".to_string(), "Select an article to translate.".to_string(),
-                                         ActionCommand::new("TOUCH".to_string(), vec!["source/{{article_id}}.md".to_string()]),
-        );
-        let translate: Action = Action::new("translate".to_string(), "Translate the article.".to_string(),
-                                            ActionCommand::new("MV".to_string(), vec!["source/{{article_id}}.md".to_string(), "translated/{{article_id}}.md".to_string()]),
-        );
         let git_rule: GitRule = GitRule::new("{{action_name}}/{{type_name}}/{{article_id}}".to_string(), "[{{action_desc}}][{{type_desc}}]: {{article_title}}".to_string());
 
-        let expected = RepoRule::new(template, vec![news, tech, talk], vec![select, translate], git_rule);
+        let expected = RepoRule::new(template, vec![news, tech, talk], git_rule);
 
         assert_eq!(rule.unwrap(), expected);
     }

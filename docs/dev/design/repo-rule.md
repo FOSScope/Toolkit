@@ -11,9 +11,8 @@ For example, there are more steps involved into translation contribution, where 
 
 So, for the rule definition, it has to be well written to:
 
-1. Define available types of articles to contribute to.
-2. Define the available action to make in every step of contribution.
-3. How git conventions (i.e. commit message rules, branch naming rules, etc.) applies in different steps.
+1. Define available types of articles to contribute to. 
+2. How git conventions (i.e. commit message rules, branch naming rules, etc.) applies in different steps.
 
 Here's how the exact rule file is defined.
 
@@ -74,23 +73,6 @@ description = "Tech Articles"
 directory = "{{step}}/tech"
 
 # [[articles]]
-# ...
-
-[[actions]]
-# Each `[[actions]]` block defines an action that can be made in the contribution process.
-action = "select"   # The action name.
-description = "Select an article to translate."  # The description of the action.
-command = "TOUCH source/{{article_id}}.md"   # The command to execute when the action is made.
-                                        # The command follows a *nix shell command syntax, but is defined, parsed, and executed by the core component of Toolkit software.
-                                        # In this case, {article} is the placeholder for the article name.
-
-# Multiple actions can be defined.
-[[actions]]
-action = "translate"
-description = "Translate the article."
-command = "MV source/{{article_id}}.md translated/{{article_id}}.md"
-
-# [[actions]]
 # ...
 
 [git]
