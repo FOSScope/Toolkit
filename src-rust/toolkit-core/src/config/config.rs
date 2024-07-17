@@ -14,9 +14,7 @@ pub struct Config {
 
 impl Config {
     pub fn new(editor: String) -> Self {
-        Self {
-            editor,
-        }
+        Self { editor }
     }
 }
 
@@ -55,8 +53,10 @@ pub fn initial_configuration_process() -> Result<Config, String> {
         let mut user_input = String::new();
 
         // Ask the user to configure everything.
-        print!("Enter the terminal command that you use to open your text editor, \
-        or enter nothing to not use any terminal text editor: ");
+        print!(
+            "Enter the terminal command that you use to open your text editor, \
+        or enter nothing to not use any terminal text editor: "
+        );
         let _ = stdout().flush();
         stdin().read_line(&mut user_input).unwrap_or(0);
         let user_input = user_input.trim().to_string();
@@ -72,7 +72,7 @@ pub fn initial_configuration_process() -> Result<Config, String> {
                 // Return the newly created configuration.
                 Ok(config)
             }
-            Err(_) => Err("Failed to create the configuration file.".to_string())
+            Err(_) => Err("Failed to create the configuration file.".to_string()),
         }
     } else {
         // If the configuration file exists, read it and return the configuration.

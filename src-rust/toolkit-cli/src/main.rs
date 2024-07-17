@@ -2,11 +2,10 @@ use std::io::{stdin, stdout, Write};
 
 use fosscopetoolkit_core::{get_contributor_repo, set_contributor_repo};
 use fosscopetoolkit_core::apis::GitHubApi;
+use fosscopetoolkit_core::config::config::initial_configuration_process;
+use fosscopetoolkit_core::config::github::GitHubAccount;
 use fosscopetoolkit_core::models::GitHubRepo;
 
-use crate::config::config::initial_configuration_process;
-use crate::config::github::GitHubAccount;
-mod config;
 mod workflow;
 
 async fn fork_creation_process(github: &GitHubApi, upstream_repo: &GitHubRepo) -> bool {

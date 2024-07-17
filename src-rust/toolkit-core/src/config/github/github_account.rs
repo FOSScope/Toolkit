@@ -1,6 +1,6 @@
 use octocrab::Octocrab;
 
-use fosscopetoolkit_core::apis::GitHubApi;
+use crate::apis::GitHubApi;
 
 /// A representation of the GitHub account that is used to interact with the GitHub API.
 ///
