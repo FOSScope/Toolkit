@@ -6,8 +6,6 @@ use fosscopetoolkit_core::models::GitHubRepo;
 
 use crate::config::config::initial_configuration_process;
 use crate::config::github::GitHubAccount;
-use crate::workflow::select;
-
 mod config;
 mod workflow;
 
@@ -251,7 +249,7 @@ async fn main() {
         match user_input.trim() {
             "1" => {
                 valid_input = true;
-                select(&contributor_repo, &github).await;
+                workflow::translate::select::select(&contributor_repo, &github).await;
             }
             "2" | "3" | "4" => {
                 eprintln!("Not implemented yet.");

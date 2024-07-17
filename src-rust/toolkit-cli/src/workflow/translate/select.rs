@@ -9,10 +9,16 @@ use fosscopetoolkit_core::workflow::translate::select::select_article;
 
 use crate::config::config::get_config;
 
+/// Select an article to translate.
+///
+/// # Arguments
+/// - `contributor_repo`: The repository that the user is contributing to.
+/// - `github`: A pointer to the GitHub API wrapper.
 pub async fn select(
     contributor_repo: &GitHubRepo,
     github: &GitHubApi,
 ) {
+    // Get the username of the currently signed in GitHub user.
     let user = github.get_user().await;
     let user = match user {
         Ok(user) => user,
@@ -22,6 +28,7 @@ pub async fn select(
         }
     };
 
+    // Fetch the Translation Project repository's rule.
     let repo_rule = get_repo_rule(contributor_repo, github).await;
 
     if repo_rule.is_err() {
@@ -30,8 +37,10 @@ pub async fn select(
     }
     let repo_rule = repo_rule.unwrap();
 
+    // Get the configuration from the configuration file.
     let config = get_config();
 
+    // Ask the user to input the URL of the article they want to select.
     println!("欢迎参与开源观察翻译项目！");
     print!("请输入要选题的文章的 URL：");
     let _ = stdout().flush();
@@ -54,10 +63,12 @@ pub async fn select(
     let article_type = &article_types[article_type_index - 1];
     println!("您选择的文章类型是：{}", article_type.description);
 
+    // Add information to the variables to be used in the Handlebars template rendering.
     let mut vars = HashMap::new();
-    vars.insert("via", url);
-    vars.insert("selector", &user);
+    vars.insert("via", url); // The URL of the article
+    vars.insert("selector", &user); // The username of the currently signed in GitHub user (as the article selector)
 
+    // Get the article content in Markdown format, rendered using the data in the variables.
     let article = select_article(&repo_rule, article_type, &vars).await;
     if article.is_err() {
         eprintln!("Failed to select article: {:?}", article.err());
@@ -65,11 +76,13 @@ pub async fn select(
     }
     let article = article.unwrap();
 
-    // TODO: Be able to allow the user to set the file name
+    // Write the article content to a file.
+    // TODO: Be able to change the file name according to the repository rule.
     let file_name = "article.md";
     fs::write(file_name, article).expect("无法写入文件");
     println!("已将 Markdown 内容写入文件：{}", file_name);
 
+    // Open the file in the user's text editor for them to edit the article if needed.
     let path_to_file = std::env::current_dir().unwrap().join(file_name);
     let editor = &config.editor;
     let _ = std::process::Command::new(editor)
@@ -79,7 +92,9 @@ pub async fn select(
     // We would not be able to detect the program's exit status if it is
     // a program that only uses the terminal to launch the editor.
     // e.g. Visual Studio Code.
-
+    // So the following message is displayed to the user to continue the process.
     println!("如果您已经完成了编辑，请输入任何内容以继续。");
     let _ = stdin().read_line(&mut String::new());
+
+    // TODO: Follow up process like commiting the changes and creating a pull request.
 }
