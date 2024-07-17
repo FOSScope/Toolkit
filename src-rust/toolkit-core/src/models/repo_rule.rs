@@ -16,7 +16,7 @@ use crate::models::GitHubRepo;
 pub struct Article {
     /// The type of the article.
     #[serde(rename = "type")]
-    pub article_type: String,
+    pub r#type: String,
     /// The description of the article type.
     pub description: String,
     /// The directory where the article type is stored.
@@ -26,9 +26,9 @@ pub struct Article {
 }
 
 impl Article {
-    pub fn new(article_type: String, description: String, directory: String, article_template: Option<String>) -> Self {
+    pub fn new(r#type: String, description: String, directory: String, article_template: Option<String>) -> Self {
         Self {
-            article_type,
+            r#type,
             description,
             directory,
             article_template,

@@ -294,4 +294,32 @@ impl GitHubApi {
         }
         Ok(())
     }
+
+    pub async fn create_file(
+        &self,
+        repo: &GitHubRepo,
+        branch: &str,
+        path: &str,
+        content: &str,
+        commit_message: &str,
+    ) -> Result<(), String> {
+        let response = self.octocrab.repos(repo.owner.clone(), repo.name.clone())
+            .create_file(
+                path,
+                commit_message,
+                content,
+            )
+            .branch(branch)
+            .send()
+            .await;
+
+        if response.is_err() {
+            let error_message = format!(
+                "Failed to create a file {:?} in the repository. Error: {:?}",
+                path, response.err().unwrap()
+            );
+            return Err(error_message);
+        }
+        Ok(())
+    }
 }
