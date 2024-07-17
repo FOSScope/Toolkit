@@ -70,7 +70,7 @@ mod tests {
 
         let template: String = r#"---
 title: {{title}}
-date: <发布时间>
+date: {{release_date}}
 author:
   - fosscope-translation-team
   - {{translator}}
@@ -79,9 +79,8 @@ banner: {{cover_image}}
 cover: {{cover_image}}
 categories:
   - 翻译
-  - <类型>
-tags:
-  - <标签>
+  - {{category}}
+tags: {{tags}}
 authorInfo: |
   via: {{via}}
 
@@ -93,7 +92,7 @@ authorInfo: |
   本文由 [FOSScope翻译组](https://github.com/FOSScope/TranslateProject) 原创编译，[开源观察](https://fosscope.com/) 荣誉推出
 ---
 
-<!-- 所有在被 `<>` 标记的地方都需要填写对应信息 -->
+<!-- 所有以 `{{variable}}` 形式展现的内容都需要替换为实际内容 -->
 
 {{summary}}
 
@@ -106,7 +105,7 @@ authorInfo: |
         let tech: Article = Article::new("tech".to_string(), "技术".to_string(), "{{step}}/tech".to_string(), None);
         let talk: Article = Article::new("talk".to_string(), "评论".to_string(), "{{step}}/talk".to_string(), None);
 
-        let git_rule: GitRule = GitRule::new("{{action_name}}/{{type_name}}/{{article_id}}".to_string(), "[{{action_desc}}][{{type_desc}}]: {{article_title}}".to_string());
+        let git_rule: GitRule = GitRule::new("main".to_string(), "{{action_name}}/{{type_name}}/{{article_id}}".to_string(), "[{{action_desc}}][{{type_desc}}] {{article_title}}".to_string());
 
         let expected = RepoRule::new(template, vec![news, tech, talk], git_rule);
 
