@@ -2,6 +2,7 @@ use octocrab::models::Repository;
 use octocrab::Octocrab;
 use serde_json;
 
+use crate::models::github_api_responses;
 use crate::models::GitHubRepo;
 
 /// A wrapper around the GitHub API that provides a set of methods to interact with the GitHub API.
@@ -219,5 +220,55 @@ impl GitHubApi {
             }
             Err(_) => Err("Failed to get file content"),
         }
+    }
+
+    /// Get the latest commit SHA of the default branch of a repository.
+    ///
+    /// # Arguments
+    /// - `repo`: The repository to get the latest commit SHA from.
+    ///
+    /// # Returns
+    /// - `Result<String, &str>`
+    ///     - `Ok(String)`: The SHA of the latest commit.
+    ///     - `Err(&str)`: An error message indicating why the method failed.
+    pub async fn get_latest_commit_sha(&self, repo: &GitHubRepo) -> Result<String, String> {
+        let response = self.octocrab._get(
+            format!("/repos/{}/{}/commits", repo.owner, repo.name),
+        ).await;
+
+        if response.is_err() {
+            return Err("Failed to read commit information of the repository.".to_string());
+        }
+
+        let response_body = self.octocrab.body_to_string(response.unwrap()).await;
+        if response_body.is_err() {
+            return Err("Failed to get the response body of the commit information of the repository.".to_string());
+        }
+
+        let json_response: Result<Vec<github_api_responses::commit::Commit>, _> = serde_json::from_str(&*response_body.unwrap());
+        match json_response {
+            Ok(commits) => {
+                if commits.is_empty() {
+                    return Err("No commits found in the repository.".to_string());
+                }
+
+                Ok(commits[0].sha.clone())
+            }
+            Err(e) => {
+                let error_message = format!("Failed to parse commit information of the repository: {:?}", e);
+                return Err(error_message);
+            },
+        }
+    }
+
+    pub async fn create_new_reference(&self, repo: &GitHubRepo, branch: &str) -> Result<(), String> {
+        // Get the SHA of the latest commit on the default branch.
+        let sha = self.get_latest_commit_sha(repo).await;
+        if sha.is_err() {
+            return Err(sha.err().unwrap());
+        }
+        let sha = sha.unwrap();
+
+        Ok(())
     }
 }

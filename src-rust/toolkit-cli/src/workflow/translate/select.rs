@@ -89,16 +89,19 @@ pub async fn select(
     let title = article.1;
     let content = article.0;
 
-    // The article file name is the original publishing date, dash (`-`), followed by the
+    // The article ID is the original publishing date, dash (`-`), followed by the
     // title in all lowercase, with spaces replaced by dashes (`-`), and with all non-alphanumeric
-    // characters removed. The file extension is `.md`.
-    let file_name = format!(
-        "{}-{}.md",
+    // characters removed.
+    let article_id = format!(
+        "{}-{}",
         publishing_date,
         title.to_lowercase().replace(" ", "-").chars().filter(
             |c| c.is_alphanumeric() || *c == '-'
         ).collect::<String>()
     );
+    vars.insert("article_id", &article_id);
+
+    let file_name = format!("{}.md", article_id);
     // Write the article content to a file.
     fs::write(&file_name, content).expect("无法写入文件");
     println!("已将 Markdown 内容写入文件：{}", &file_name);
