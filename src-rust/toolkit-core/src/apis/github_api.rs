@@ -261,7 +261,15 @@ impl GitHubApi {
         }
     }
 
-    pub async fn create_new_reference(&self, repo: &GitHubRepo, branch: &str) -> Result<(), String> {
+    /// Create a new reference in a repository. The new reference will be based on the latest commit of the default branch.
+    ///
+    /// # Arguments
+    /// - `repo`: The repository to create the new reference in.
+    /// - `r#ref`: The name of the new reference.
+    ///
+    /// # Returns
+    /// - `Result<(), String>`: `Ok` if the new reference is successfully created, an error message indicating why the method failed otherwise.
+    pub async fn create_new_reference(&self, repo: &GitHubRepo, r#ref: &str) -> Result<(), String> {
         // Get the SHA of the latest commit on the default branch.
         let sha = self.get_latest_commit_sha(repo).await;
         if sha.is_err() {
@@ -269,6 +277,21 @@ impl GitHubApi {
         }
         let sha = sha.unwrap();
 
+        let response = self.octocrab._post(
+            format!("/repos/{}/{}/git/refs", repo.owner, repo.name),
+            Some(&serde_json::json!({
+                "ref": format!("refs/heads/{}", r#ref),
+                "sha": sha,
+            })),
+        ).await;
+
+        if response.is_err() {
+            let error_message = format!(
+                "Failed to create a new reference {:?} in the repository. Error: {:?}",
+                r#ref, response.err().unwrap()
+            );
+            return Err(error_message);
+        }
         Ok(())
     }
 }
