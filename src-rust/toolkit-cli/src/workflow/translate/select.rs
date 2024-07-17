@@ -6,7 +6,7 @@ use fosscopetoolkit_core::apis::GitHubApi;
 use fosscopetoolkit_core::config::config::get_config;
 use fosscopetoolkit_core::models::GitHubRepo;
 use fosscopetoolkit_core::models::repo_rule::get_repo_rule;
-use fosscopetoolkit_core::workflow::translate::select::select_article;
+use fosscopetoolkit_core::workflow;
 
 /// Select an article to translate.
 ///
@@ -48,6 +48,15 @@ pub async fn select(
     let url = url.trim();
     println!("您选择的文章 URL 是：{}", url);
 
+    // Ask the user to enter the original publishing date of the article.
+    // TODO: Automatically fetch the original publishing date from the article, if possible.
+    print!("请输入文章的原始发布日期 (格式：YYYYMMDD（例如：20240715)): ");
+    let _ = stdout().flush();
+    let mut publishing_date = String::new();
+    stdin().read_line(&mut publishing_date).unwrap_or(0);
+    let publishing_date = publishing_date.trim();
+    println!("您输入的文章发布日期是：{}", publishing_date);
+
     // Get the type of the article
     let article_types = &repo_rule.articles;
     println!("请选择文章类型：");
@@ -68,18 +77,31 @@ pub async fn select(
     vars.insert("selector", &user); // The username of the currently signed in GitHub user (as the article selector)
 
     // Get the article content in Markdown format, rendered using the data in the variables.
-    let article = select_article(&repo_rule, article_type, &vars).await;
+    let article = workflow::translate::select::fetch(
+        &repo_rule, article_type, &vars
+    ).await;
     if article.is_err() {
         eprintln!("Failed to select article: {:?}", article.err());
         return;
     }
     let article = article.unwrap();
 
+    let title = article.1;
+    let content = article.0;
+
+    // The article file name is the original publishing date, dash (`-`), followed by the
+    // title in all lowercase, with spaces replaced by dashes (`-`), and with all non-alphanumeric
+    // characters removed. The file extension is `.md`.
+    let file_name = format!(
+        "{}-{}.md",
+        publishing_date,
+        title.to_lowercase().replace(" ", "-").chars().filter(
+            |c| c.is_alphanumeric() || *c == '-'
+        ).collect::<String>()
+    );
     // Write the article content to a file.
-    // TODO: Be able to change the file name according to the repository rule.
-    let file_name = "article.md";
-    fs::write(file_name, article).expect("无法写入文件");
-    println!("已将 Markdown 内容写入文件：{}", file_name);
+    fs::write(&file_name, content).expect("无法写入文件");
+    println!("已将 Markdown 内容写入文件：{}", &file_name);
 
     // Open the file in the user's text editor for them to edit the article if needed.
     let path_to_file = std::env::current_dir().unwrap().join(file_name);

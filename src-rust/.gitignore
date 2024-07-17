@@ -10,5 +10,4 @@
 .fosscope_toolkit/
 
 # Test Output
-output.md
-article.md
+*.md

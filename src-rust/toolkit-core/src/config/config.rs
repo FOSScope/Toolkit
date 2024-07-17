@@ -38,8 +38,8 @@ pub fn get_config() -> Config {
 ///
 /// # Returns
 /// - `Result<Config, String>`:
-///    - `Ok(Config)`: The newly created or existing configuration.
-///    - `Err(String)`: An error message indicating why the process failed.
+///     - `Ok(Config)`: The newly created or existing configuration.
+///     - `Err(String)`: An error message indicating why the process failed.
 pub fn initial_configuration_process() -> Result<Config, String> {
     let dir_path = Path::new(".fosscope_toolkit");
     if !dir_path.exists() {
