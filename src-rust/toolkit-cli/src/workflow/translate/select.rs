@@ -3,11 +3,10 @@ use std::fs;
 use std::io::{stdin, stdout, Write};
 
 use fosscopetoolkit_core::apis::GitHubApi;
+use fosscopetoolkit_core::config::config::get_config;
 use fosscopetoolkit_core::models::GitHubRepo;
 use fosscopetoolkit_core::models::repo_rule::get_repo_rule;
 use fosscopetoolkit_core::workflow::translate::select::select_article;
-
-use crate::config::config::get_config;
 
 /// Select an article to translate.
 ///
