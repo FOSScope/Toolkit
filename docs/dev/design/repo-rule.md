@@ -79,6 +79,7 @@ directory = "{{step}}/tech"
 # This section defines how git conventions applies in different steps.
 # `{action}`, `{type}`, and `{article}` are placeholders for the action's name, article type, and article name respectively.
 # Other placeholders can be used as well.
+base = "main"  # The branch to create contribution pull request to.
 branch_naming = "{{action_name}}/{{type_name}}/{{article_id}}"  # The branch naming rule.
 commit_message = "[{{action_desc}}][{{type_desc}}]: {{article_title}}"  # The commit message rule.
 ```

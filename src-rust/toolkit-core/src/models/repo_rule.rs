@@ -50,6 +50,8 @@ impl Article {
 /// and [RepoRule](struct.RepoRule.html) definition for more information.
 #[derive(PartialEq, Eq, Debug, serde::Deserialize)]
 pub struct GitRule {
+    /// The name of the branch to create contribution pull request to.
+    pub base: String,
     /// The naming convention for branches. Has to be formatted with real values.
     pub branch_naming: String,
     /// The commit message template. Has to be formatted with real values.
@@ -57,8 +59,9 @@ pub struct GitRule {
 }
 
 impl GitRule {
-    pub fn new(branch_naming: String, commit_message: String) -> Self {
+    pub fn new(base: String, branch_naming: String, commit_message: String) -> Self {
         Self {
+            base,
             branch_naming,
             commit_message,
         }
