@@ -1,3 +1,5 @@
+use crate::models::websites::ItsFoss;
+
 /// A representation of the set of rules to filter the HTML content of a website.
 ///
 /// # Fields
@@ -9,7 +11,7 @@ pub struct HTMLFilterRule<'a> {
 }
 
 impl<'a> HTMLFilterRule<'a> {
-    fn new(tags: Vec<&'a str>, classes: Vec<&'a str>) -> Self {
+    pub fn new(tags: Vec<&'a str>, classes: Vec<&'a str>) -> Self {
         Self {
             tags,
             classes,
@@ -23,19 +25,7 @@ impl<'a> HTMLFilterRule<'a> {
     pub fn get_filter_rule(url: &str) -> Self {
         match url {
             "itsfoss.com" | "news.itsfoss.com" => {
-                Self::new(
-                    vec![
-                        "script", "style", "link", "meta", "li", "desc", "title", "svg", "path",
-                        "dialog", "select", "head", "header", "foot", "footer", "ul", "nav", "button",
-                        "form", "input", "picture", "time", "h2", "h3", "h4", "i", "aside",
-                        "FreeStarVideoAdContainer", "freestar-video-parent", "reestar-video-child",
-                    ],
-                    vec![
-                        "progress-bar", "js-menu", "social-share", "post-info__readtime",
-                        "cta__description", "cta__inner", "cta__content", "hide-mobile", "js-toc",
-                        "author-card", "related-posts",
-                    ],
-                )
+                ItsFoss::get_filter_rule()
             }
             _ => Self::new(vec![], vec![])
         }
