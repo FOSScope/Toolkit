@@ -24,7 +24,7 @@ impl<'a> HTMLFilterRule<'a> {
     /// - `itsfoss.com` (and its news subdomain `news.itsfoss.com`)
     pub fn get_filter_rule(website: &SupportedWebsites) -> Self {
         match website {
-            SupportedWebsites::Itsfoss | SupportedWebsites::NewsItsfoss => {
+            SupportedWebsites::Itsfoss(_, _) | SupportedWebsites::NewsItsfoss(_, _) => {
                 Self::new(
                     vec![
                         "script", "style", "link", "meta", "li", "desc", "title", "svg", "path",
