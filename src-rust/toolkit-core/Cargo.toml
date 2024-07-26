@@ -22,6 +22,7 @@ regex = "1.10.5" # Regular Expression
 url = "2.5.2" # URL Parsing
 reqwest = { version = "0.12", features = ["json"] } # HTTP Client
 octocrab = "0.38.0" # GitHub API
+scraper = "0.19.1" # HTML Parser
 html2md = { workspace = true } # HTML to Markdown
 #libhtmlfilter = "0.1.2" # HTML Filter
 libhtmlfilter = { git = "https://github.com/FOSScope/libhtmlfilter.git", rev = "e403113e901ae3cd422c86ab7ca6602e3ba78ab8" } # HTML Filter
