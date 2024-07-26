@@ -13,12 +13,12 @@ pub async fn commit(
     content: &str,
     article_type: &Article,
     repo_rule: &RepoRule,
-    vars: &HashMap<&str, &str>,
+    vars: &HashMap<&str, String>,
 ) -> Result<(), String> {
     let mut local_vars = vars.clone();
-    local_vars.insert("action_name", "select");
-    local_vars.insert("action_desc", "选题");
-    local_vars.insert("step", "sources");
+    local_vars.insert("action_name", "select".to_string());
+    local_vars.insert("action_desc", "选题".to_string());
+    local_vars.insert("step", "sources".to_string());
 
     let handlebars = Handlebars::new();
     let branch_name = handlebars.render_template(&*repo_rule.git.branch_naming, &local_vars).unwrap();
@@ -49,12 +49,12 @@ pub async fn create_pr(
     upstream_repo: &GitHubRepo,
     contributor_repo: &GitHubRepo,
     repo_rule: &RepoRule,
-    vars: &HashMap<&str, &str>,
+    vars: &HashMap<&str, String>,
 ) -> Result<(), String> {
     let mut local_vars = vars.clone();
-    local_vars.insert("action_name", "select");
-    local_vars.insert("action_desc", "选题");
-    local_vars.insert("step", "sources");
+    local_vars.insert("action_name", "select".to_string());
+    local_vars.insert("action_desc", "选题".to_string());
+    local_vars.insert("step", "sources".to_string());
 
     let handlebars = Handlebars::new();
     let branch_name = handlebars.render_template(&*repo_rule.git.branch_naming, &local_vars).unwrap();

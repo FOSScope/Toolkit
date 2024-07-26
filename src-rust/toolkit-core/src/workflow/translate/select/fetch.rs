@@ -70,7 +70,7 @@ pub async fn get_content(url: &str) -> Result<(String, String), String> {
 pub async fn fetch(
     repo_rule: &RepoRule,
     article_type: &Article,
-    vars: &HashMap<&str, &str>,
+    vars: &HashMap<&str, String>,
 ) -> Result<(String, String), String> {
     let mut local_vars = vars.clone();
 
@@ -83,8 +83,8 @@ pub async fn fetch(
     let content = content.unwrap();
 
     // Add Info To Vars
-    local_vars.insert("title", &content.1);
-    local_vars.insert("content", &content.0);
+    local_vars.insert("title", content.1.clone());
+    local_vars.insert("content", content.0);
 
     // Get Article Template
     let article_template = repo_rule.get_article_template(article_type);

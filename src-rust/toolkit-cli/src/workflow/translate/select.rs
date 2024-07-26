@@ -46,7 +46,7 @@ pub async fn select(
     let _ = stdout().flush();
     let mut url = String::new();
     stdin().read_line(&mut url).unwrap_or(0);
-    let url = url.trim();
+    let url = url.trim().to_string();
     println!("您选择的文章 URL 是：{}", url);
 
     // Ask the user to enter the original publishing date of the article.
@@ -75,9 +75,9 @@ pub async fn select(
     // Add information to the variables to be used in the Handlebars template rendering.
     let mut vars = HashMap::new();
     vars.insert("via", url); // The URL of the article
-    vars.insert("selector", &user); // The username of the currently signed in GitHub user (as the article selector)
-    vars.insert("type_name", &article_type.r#type);
-    vars.insert("type_desc", &article_type.description);
+    vars.insert("selector", user); // The username of the currently signed in GitHub user (as the article selector)
+    vars.insert("type_name", article_type.r#type.clone());
+    vars.insert("type_desc", article_type.description.clone());
 
     // Get the article content in Markdown format, rendered using the data in the variables.
     let article = workflow::translate::select::fetch(
@@ -91,7 +91,7 @@ pub async fn select(
 
     let title = article.1;
     let content = article.0;
-    vars.insert("article_title", &title);
+    vars.insert("article_title", title.clone());
 
     // The article ID is the original publishing date, dash (`-`), followed by the
     // title in all lowercase, with spaces replaced by dashes (`-`), and with all non-alphanumeric
@@ -103,7 +103,7 @@ pub async fn select(
             |c| c.is_alphanumeric() || *c == '-'
         ).collect::<String>()
     );
-    vars.insert("article_id", &article_id);
+    vars.insert("article_id", article_id.clone());
 
     let file_name = format!("{}.md", article_id);
     // Write the article content to a file.
