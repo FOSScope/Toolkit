@@ -6,6 +6,7 @@ pub mod apis;
 pub mod models;
 pub mod workflow;
 pub mod config;
+mod utils;
 
 /// Set the contributor repository of an upstream repository.
 /// The information of the contributor repository will be stored in a JSON file.
