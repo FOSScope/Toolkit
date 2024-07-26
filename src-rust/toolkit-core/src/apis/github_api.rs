@@ -1,5 +1,3 @@
-use std::fmt::format;
-
 use octocrab::models::Repository;
 use octocrab::Octocrab;
 use serde_json;
