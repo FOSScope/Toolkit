@@ -5,6 +5,7 @@ use handlebars::{Context, Handlebars, Helper, Output, RenderContext, RenderError
 use crate::models::HTMLFilterRule;
 use crate::models::repo_rule::Article;
 use crate::models::RepoRule;
+use crate::models::SupportedWebsites;
 
 /// Get the content of an HTML page in Markdown format.
 ///
@@ -19,21 +20,9 @@ use crate::models::RepoRule;
 ///     - `Ok(String, String)`: The content of the HTML page in Markdown format (first element) and the title of the page (second element).
 ///     - `Err(String)`: An error message indicating why the content could not be fetched.
 pub async fn get_content(url: &str) -> Result<(String, String), String> {
-    let website = url::Url::parse(url);
-    let website = match website {
-        Ok(website) => website,
-        Err(_) => {
-            return Err("Failed to parse the URL.".to_string());
-        }
-    };
-    let host = website.host_str();
-    let host = if host.is_none() {
-        return Err("Failed to get the host of the URL.".to_string());
-    } else {
-        host.unwrap()
-    };
+    let website = SupportedWebsites::get_website(url)?;
 
-    let html_filter_rule = HTMLFilterRule::get_filter_rule(host);
+    let html_filter_rule = HTMLFilterRule::get_filter_rule(&website);
 
     // Filter the HTML content
     let filtered_html = libhtmlfilter::get_filtered_html_fullurl_removeref(

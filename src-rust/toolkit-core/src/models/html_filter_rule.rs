@@ -1,3 +1,5 @@
+use crate::models::supported_websites::SupportedWebsites;
+
 /// A representation of the set of rules to filter the HTML content of a website.
 ///
 /// # Fields
@@ -20,9 +22,9 @@ impl<'a> HTMLFilterRule<'a> {
     ///
     /// # Current Supported Websites:
     /// - `itsfoss.com` (and its news subdomain `news.itsfoss.com`)
-    pub fn get_filter_rule(url: &str) -> Self {
-        match url {
-            "itsfoss.com" | "news.itsfoss.com" => {
+    pub fn get_filter_rule(website: &SupportedWebsites) -> Self {
+        match website {
+            SupportedWebsites::Itsfoss | SupportedWebsites::NewsItsfoss => {
                 Self::new(
                     vec![
                         "script", "style", "link", "meta", "li", "desc", "title", "svg", "path",
