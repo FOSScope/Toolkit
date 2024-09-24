@@ -1,7 +1,7 @@
 use octocrab::models::Repository;
 use octocrab::Octocrab;
+use reqwest::header::{HeaderMap, HeaderValue};
 use serde_json;
-
 use crate::models::github_api_responses;
 use crate::models::GitHubRepo;
 
@@ -354,5 +354,49 @@ impl GitHubApi {
             return Err(error_message);
         }
         Ok(())
+    }
+
+    pub async fn get_contents(&self, repo: &GitHubRepo, path: &str) -> Result<github_api_responses::repository_content::RepositoryContent, String> {
+        let path = path.strip_prefix("/").unwrap_or_else(|| path);
+
+        let mut headers = HeaderMap::new();
+        headers.insert("ACCEPT", HeaderValue::from_static("application/vnd.github.v3.object"));
+
+        let response = self.octocrab._get_with_headers(
+            format!("/repos/{}/{}/contents/{path}", repo.owner, repo.name),
+            Some(headers),
+        ).await;
+
+        if response.is_err() {
+            return Err(
+                format!(
+                    "Failed to get the contents of the {:?} directory in the {:?} repository.",
+                    path, repo.get_full_name()
+                )
+            );
+        }
+
+        let response_body = self.octocrab.body_to_string(response.unwrap()).await;
+        if response_body.is_err() {
+            return Err(
+                format!(
+                    "Failed to get the response body of the contents of the {:?} directory in the {:?} repository.",
+                    path, repo.get_full_name()
+                )
+            );
+        }
+        print!("response_body: {:?}", response_body);
+
+        let json_response: Result<github_api_responses::repository_content::RepositoryContent, _> = serde_json::from_str(&*response_body.unwrap());
+        match json_response {
+            Ok(content) => Ok(content),
+            Err(e) => {
+                let error_message = format!(
+                    "Failed to parse the contents of the {:?} directory in the {:?} repository: {:?}",
+                    path, repo.get_full_name(), e
+                );
+                Err(error_message)
+            }
+        }
     }
 }
