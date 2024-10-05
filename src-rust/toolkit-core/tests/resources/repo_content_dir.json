@@ -1,0 +1,50 @@
+{
+  "type": "dir",
+  "size": 0,
+  "name": "src",
+  "path": "src",
+  "sha": "2962be1c94eaae9794b3080790ec9d74b2fa8358",
+  "url": "https://api.github.com/repos/octocat/octorepo/contents/src?ref=main",
+  "git_url": "https://api.github.com/repos/octocat/octorepo/git/blobs/fff6fe3a23bf1c8ea0692b4a883af99bee26fd3b",
+  "html_url": "https://github.com/octocat/octorepo/blob/main/src",
+  "download_url": "https://raw.githubusercontent.com/octocat/octorepo/main/src",
+  "_links": {
+    "self": "https://api.github.com/repos/octocat/octorepo/contents/src",
+    "git": "https://api.github.com/repos/octocat/octorepo/git/blobs/fff6fe3a23bf1c8ea0692b4a883af99bee26fd3b",
+    "html": "https://github.com/octocat/octorepo/blob/main/src"
+  },
+  "entries": [
+    {
+      "type": "file",
+      "size": 625,
+      "name": "app.js",
+      "path": "src/app.js",
+      "sha": "fff6fe3a23bf1c8ea0692b4a883af99bee26fd3b",
+      "url": "https://api.github.com/repos/octocat/octorepo/contents/src/app.js",
+      "git_url": "https://api.github.com/repos/octocat/octorepo/git/blobs/fff6fe3a23bf1c8ea0692b4a883af99bee26fd3b",
+      "html_url": "https://github.com/octocat/octorepo/blob/main/src/app.js",
+      "download_url": "https://raw.githubusercontent.com/octocat/octorepo/main/src/app.js",
+      "_links": {
+        "self": "https://api.github.com/repos/octocat/octorepo/contents/src/app.js",
+        "git": "https://api.github.com/repos/octocat/octorepo/git/blobs/fff6fe3a23bf1c8ea0692b4a883af99bee26fd3b",
+        "html": "https://github.com/octocat/octorepo/blob/main/src/app.js"
+      }
+    },
+    {
+      "type": "dir",
+      "size": 0,
+      "name": "images",
+      "path": "src/images",
+      "sha": "a84d88e7554fc1fa21bcbc4efae3c782a70d2b9d",
+      "url": "https://api.github.com/repos/octocat/octorepo/contents/src/images",
+      "git_url": "https://api.github.com/repos/octocat/octorepo/git/trees/a84d88e7554fc1fa21bcbc4efae3c782a70d2b9d",
+      "html_url": "https://github.com/octocat/octorepo/tree/main/src/images",
+      "download_url": null,
+      "_links": {
+        "self": "https://api.github.com/repos/octocat/octorepo/contents/src/images",
+        "git": "https://api.github.com/repos/octocat/octorepo/git/trees/a84d88e7554fc1fa21bcbc4efae3c782a70d2b9d",
+        "html": "https://github.com/octocat/octorepo/tree/main/src/images"
+      }
+    }
+  ]
+}
