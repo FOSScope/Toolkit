@@ -140,4 +140,29 @@ mod tests {
             }
         }
     }
+
+    #[tokio::test]
+    async fn get_all_repo_file_content() {
+        let octocrab = Octocrab::builder()
+            .build().unwrap();
+        let github = GitHubApi::new("octocat".to_string(), octocrab);
+
+        let result = github.get_all_file_contents_in_repo(
+            &GitHubRepo {
+                owner: "octocat".to_string(),
+                name: "octocat.github.io".to_string(),
+            }
+        ).await.unwrap();
+
+        for content in result {
+            match content {
+                github_api_responses::repository_content::RepositoryContent::File(content) => {
+                    print!("{}\n", content.path);
+                }
+                github_api_responses::repository_content::RepositoryContent::Dir(_) => {
+                    panic!("Expected file, got directory.");
+                }
+            }
+        }
+    }
 }

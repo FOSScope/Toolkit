@@ -847,6 +847,7 @@ name = "fosscopetoolkit-core"
 version = "0.1.0-dev"
 dependencies = [
  "base64 0.22.1",
+ "futures",
  "handlebars",
  "html2md",
  "libhtmlfilter",

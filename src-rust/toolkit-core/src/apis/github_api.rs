@@ -1,3 +1,5 @@
+use futures::future::{BoxFuture, FutureExt};
+
 use octocrab::models::Repository;
 use octocrab::Octocrab;
 use reqwest::header::{HeaderMap, HeaderValue};
@@ -385,7 +387,6 @@ impl GitHubApi {
                 )
             );
         }
-        print!("response_body: {:?}", response_body);
 
         let json_response: Result<github_api_responses::repository_content::RepositoryContent, _> = serde_json::from_str(&*response_body.unwrap());
         match json_response {
@@ -398,5 +399,55 @@ impl GitHubApi {
                 Err(error_message)
             }
         }
+    }
+
+    pub fn get_all_file_contents<'a>(&'a self, repo: &'a GitHubRepo, path: &'a str) -> BoxFuture<'a, Result<
+        Vec<github_api_responses::repository_content::RepositoryContent>, String
+    >> {
+        async move {
+            let mut contents = Vec::new();
+
+            let content = self.get_contents(repo, path).await;
+            match content {
+                Ok(content) => {
+                    match content {
+                        github_api_responses::repository_content::RepositoryContent::File(_) => {
+                            contents.push(content);
+                        }
+                        github_api_responses::repository_content::RepositoryContent::Dir(content) => {
+                            for item in content.entries.unwrap() {
+                                match item {
+                                    github_api_responses::repository_content::RepositoryContent::File(content) => {
+                                        let file_content = self.get_contents(repo, &content.path).await;
+                                        if file_content.is_err() {
+                                            return Err(file_content.err().unwrap());
+                                        }
+                                        contents.push(file_content?);
+                                    }
+                                    github_api_responses::repository_content::RepositoryContent::Dir(content) => {
+                                        let dir_contents = self.get_all_file_contents(repo, &content.path).await;
+                                        if dir_contents.is_err() {
+                                            return Err(dir_contents.err().unwrap());
+                                        }
+                                        contents.extend(dir_contents?);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                Err(e) => {
+                    return Err(e);
+                }
+            }
+
+            Ok(contents)
+        }.boxed()
+    }
+
+    pub async fn get_all_file_contents_in_repo<'a> (&'a self, repo: &'a GitHubRepo) -> Result<
+        Vec<github_api_responses::repository_content::RepositoryContent>, String
+    > {
+        self.get_all_file_contents(repo, "").await
     }
 }
