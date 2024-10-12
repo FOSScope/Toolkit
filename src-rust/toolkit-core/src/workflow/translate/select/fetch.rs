@@ -1,7 +1,7 @@
+use std::string::String;
 use std::collections::HashMap;
 
 use handlebars::{Context, Handlebars, Helper, Output, RenderContext, RenderError};
-
 use crate::models::{article_metadata, HTMLFilterRule};
 use crate::models::repo_rule::Article;
 use crate::models::RepoRule;
@@ -38,10 +38,11 @@ pub async fn get_content(url: &str) -> Result<(String, String), String> {
     // The title is the only H1 header in the content, with the `# ` prefix removed.
     let title = &content.split("\n").find(
         |line| line.starts_with("# ")
-    ).unwrap()[2..];
-
-    // The content is the content without the title
+    ).unwrap();
+    // Remove the line from the content
     let content = content.replace(title, "");
+    // Remove the `# ` prefix from the title
+    let title = title.replace("# ", "");
 
     Ok((content, title.to_string()))
 }
