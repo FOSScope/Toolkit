@@ -29,7 +29,7 @@ pub async fn select(
     };
 
     // Fetch the Translation Project repository's rule.
-    let repo_rule = get_repo_rule(contributor_repo, github).await;
+    let repo_rule = get_repo_rule(upstream_repo, github).await;
 
     if repo_rule.is_err() {
         eprintln!("Failed to get repository rule: {:?}", repo_rule.err());
