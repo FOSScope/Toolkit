@@ -107,6 +107,7 @@ pub async fn fetch(
             },
         ),
     );
+    handlebars.register_escape_fn(handlebars::no_escape);
 
     let rendered = handlebars.render_template(&*article_template, &local_vars).unwrap();
 
