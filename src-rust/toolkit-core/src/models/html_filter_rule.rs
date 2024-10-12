@@ -27,15 +27,15 @@ impl<'a> HTMLFilterRule<'a> {
             SupportedWebsites::Itsfoss(_, _) | SupportedWebsites::NewsItsfoss(_, _) => {
                 Self::new(
                     vec![
-                        "script", "style", "link", "meta", "li", "desc", "title", "svg", "path",
-                        "dialog", "select", "head", "header", "foot", "footer", "ul", "nav", "button",
-                        "form", "input", "picture", "time", "h2", "h3", "h4", "i", "aside",
+                        "script", "style", "link", "meta", "desc", "title", "svg", "path",
+                        "dialog", "select", "head", "header", "foot", "footer", "nav", "button",
+                        "form", "input", "picture", "time", "aside",
                         "FreeStarVideoAdContainer", "freestar-video-parent", "reestar-video-child",
                     ],
                     vec![
                         "progress-bar", "js-menu", "social-share", "post-info__readtime",
                         "cta__description", "cta__inner", "cta__content", "hide-mobile", "js-toc",
-                        "author-card", "related-posts",
+                        "author-card", "related-posts", "post-info", "post-tags", "author-info",
                     ],
                 )
             }
