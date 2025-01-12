@@ -55,7 +55,7 @@ impl AuthorMetadata {
                 let document = Html::parse_document(&*html);
 
                 let element = document.select(
-                    &Selector::parse("div.c-byline.c-topper__byline").unwrap()
+                    &Selector::parse("span.post-info__authors").unwrap()
                 ).next();
                 let element = match element {
                     Some(element) => element,
