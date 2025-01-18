@@ -31,7 +31,7 @@ pub enum ConfigCreationLoadError {
     FileOpenError,
     /// Error when cannot write to the configuration file.
     FileWriteError,
-    /// Error when cannot parse the configuration from JSON.
+    /// Error when cannot parse the configuration from stored JSON.
     ParseError,
     /// Error when serializing the configuration to JSON.
     SerializeFailed,
@@ -45,7 +45,7 @@ pub enum ConfigCreationLoadError {
 ///     - Err(ConfigCreationLoadError): Reason why the configuration could not be loaded.
 pub fn get_config() -> Result<Config, ConfigCreationLoadError> {
     let config_file = File::open(".fosscope_toolkit/config.json");
-    if (config_file.is_err()) {
+    if config_file.is_err() {
         return Err(ConfigCreationLoadError::FileOpenError);
     }
     let reader = BufReader::new(config_file.unwrap());
@@ -92,8 +92,8 @@ pub fn config_process() -> Result<Config, ConfigCreationLoadError> {
         match config_json {
             Ok(config_json) => {
                 // Write the configuration to the configuration file.
-                let mut file = File::create(".fosscope_toolkit/config.json");
-                if (file.is_err()) {
+                let file = File::create(".fosscope_toolkit/config.json");
+                if file.is_err() {
                     return Err(ConfigCreationLoadError::FileCreateError);
                 }
                 match file.unwrap().write_all(config_json.as_bytes()) {
