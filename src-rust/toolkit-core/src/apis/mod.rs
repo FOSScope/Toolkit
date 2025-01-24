@@ -1,3 +1,3 @@
 pub use github_api::GitHubApi;
 
-mod github_api;
+pub mod github_api;

@@ -1,7 +1,4 @@
 pub mod apis;
 pub mod config;
+pub mod models;
 pub mod utils;
-
-pub fn hello() {
-    println!("Hello, World!");
-}
