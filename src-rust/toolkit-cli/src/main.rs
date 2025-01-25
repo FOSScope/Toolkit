@@ -1,10 +1,12 @@
-use std::io::{stdin, stdout, Write};
+mod workflow;
+
 use fosscopetoolkit_core::apis::github_api::RepoUpstreamValidationError;
 use fosscopetoolkit_core::apis::GitHubApi;
 use fosscopetoolkit_core::config::config::config_process;
 use fosscopetoolkit_core::config::github::GitHubAccount;
 use fosscopetoolkit_core::models::GitHubRepo;
 use fosscopetoolkit_core::utils::github::github_login::{github_login, GitHubLoginError};
+use std::io::{stdin, stdout, Write};
 
 async fn login() -> Result<GitHubApi, GitHubLoginError> {
     let file_path = std::path::Path::new(".fosscope_toolkit/github_account.json");
@@ -15,17 +17,11 @@ async fn login() -> Result<GitHubApi, GitHubLoginError> {
                 let reader = std::io::BufReader::new(file);
                 let github_account = serde_json::from_reader(reader);
                 match github_account {
-                    Ok(github_account) => {
-                        github_login(&github_account).await
-                    }
-                    Err(_) => {
-                        Err(GitHubLoginError::ParseError)
-                    }
+                    Ok(github_account) => github_login(&github_account).await,
+                    Err(_) => Err(GitHubLoginError::ParseError),
                 }
             }
-            Err(_) => {
-                Err(GitHubLoginError::FileOpenError)
-            }
+            Err(_) => Err(GitHubLoginError::FileOpenError),
         }
     } else {
         loop {
@@ -50,16 +46,16 @@ async fn login() -> Result<GitHubApi, GitHubLoginError> {
                         Ok(json_str) => {
                             match std::fs::create_dir_all(".fosscope_toolkit") {
                                 Ok(_) => {}
-                                Err(_) => return Err(GitHubLoginError::DirCreateError)
+                                Err(_) => return Err(GitHubLoginError::DirCreateError),
                             }
                             let file = std::fs::File::create(file_path);
                             if file.is_err() {
-                                return Err(GitHubLoginError::FileCreateError)
+                                return Err(GitHubLoginError::FileCreateError);
                             }
                             return match file.unwrap().write_all(json_str.as_bytes()) {
                                 Ok(_) => Ok(github),
-                                Err(_) => Err(GitHubLoginError::FileWriteError)
-                            }
+                                Err(_) => Err(GitHubLoginError::FileWriteError),
+                            };
                         }
                         Err(_) => {
                             eprintln!("Failed to save the GitHub account.");
@@ -67,20 +63,19 @@ async fn login() -> Result<GitHubApi, GitHubLoginError> {
                         }
                     }
                 }
-                Err(e) => {
-                    match e {
-                        GitHubLoginError::AuthenticationError(message) => {
-                            eprintln!(
-                                "Failed to authenticate with GitHub. Reason: {}.\
-                                Please try again.", message
-                            );
-                            continue;
-                        }
-                        _ => {
-                            return Err(e);
-                        }
+                Err(e) => match e {
+                    GitHubLoginError::AuthenticationError(message) => {
+                        eprintln!(
+                            "Failed to authenticate with GitHub. Reason: {}.\
+                                Please try again.",
+                            message
+                        );
+                        continue;
                     }
-                }
+                    _ => {
+                        return Err(e);
+                    }
+                },
             }
         }
     }
@@ -95,7 +90,10 @@ async fn create_fork(github: &GitHubApi, upstream_repo: &GitHubRepo) -> GitHubRe
     }
 }
 
-async fn fork_creation_process(github: &GitHubApi, upstream_repo: &GitHubRepo) -> Option<GitHubRepo> {
+async fn fork_creation_process(
+    github: &GitHubApi,
+    upstream_repo: &GitHubRepo,
+) -> Option<GitHubRepo> {
     print!("Do you want to use another fork or create a new fork? (y/n) ");
     let mut user_input = String::new();
     let _ = stdout().flush();
@@ -103,7 +101,10 @@ async fn fork_creation_process(github: &GitHubApi, upstream_repo: &GitHubRepo) -
     match user_input.to_lowercase().trim() {
         "y" | "yes" => {
             let owner = github.get_user().await.unwrap();
-            println!("Please enter the name of the owner of the forked repository (default: {}):", owner);
+            println!(
+                "Please enter the name of the owner of the forked repository (default: {}):",
+                owner
+            );
             let mut fork_owner = String::new();
             stdin().read_line(&mut fork_owner).unwrap_or(0);
             fork_owner = fork_owner.trim().to_string();
@@ -111,44 +112,47 @@ async fn fork_creation_process(github: &GitHubApi, upstream_repo: &GitHubRepo) -
                 fork_owner = owner;
             }
             let repo_name = upstream_repo.name.clone();
-            println!("Please enter the name of the forked repository (default: {}):", repo_name);
+            println!(
+                "Please enter the name of the forked repository (default: {}):",
+                repo_name
+            );
             let mut fork_repo_name = String::new();
             stdin().read_line(&mut fork_repo_name).unwrap_or(0);
             fork_repo_name = fork_repo_name.trim().to_string();
             if fork_repo_name.is_empty() {
                 fork_repo_name = repo_name;
             }
-            println!("Creating a fork with the owner: {} and the repository name: {}", fork_owner, fork_repo_name);
+            println!(
+                "Creating a fork with the owner: {} and the repository name: {}",
+                fork_owner, fork_repo_name
+            );
             let fork_repo = GitHubRepo::new(fork_owner, fork_repo_name);
 
             // Check if the forked repository exists.
-            let fork_exists = github.validate_repo_upstream(&fork_repo, upstream_repo).await;
+            let fork_exists = github
+                .validate_repo_upstream(&fork_repo, upstream_repo)
+                .await;
             match fork_exists {
                 Ok(_) => {
                     // Ask the user if they want to use the forked repository.
-                    println!("The repo {} is a fork of the upstream repository.", fork_repo.get_full_name());
+                    println!(
+                        "The repo {} is a fork of the upstream repository.",
+                        fork_repo.get_full_name()
+                    );
                     print!("Do you want to use this forked repository as the contributor repository? (y/n) ");
                     let mut user_input = String::new();
                     let _ = stdout().flush();
                     stdin().read_line(&mut user_input).unwrap_or(0);
                     match user_input.to_lowercase().trim() {
-                        "y" | "yes" => {
-                            Some(fork_repo)
-                        }
-                        _ => {
-                            None
-                        }
+                        "y" | "yes" => Some(fork_repo),
+                        _ => None,
                     }
                 }
                 Err(RepoUpstreamValidationError::DoNotExist) => {
                     // Create a new forked repository and use it as the contributor repository.
-                    let fork = github.create_fork(
-                        &fork_repo, upstream_repo
-                    ).await;
+                    let fork = github.create_fork(&fork_repo, upstream_repo).await;
                     match fork {
-                        Ok(fork) => {
-                            Some(fork)
-                        }
+                        Ok(fork) => Some(fork),
                         Err(_) => {
                             eprintln!("Failed to create the forked repository.");
                             std::process::exit(1);
@@ -171,37 +175,50 @@ async fn fork_creation_process(github: &GitHubApi, upstream_repo: &GitHubRepo) -
 
 async fn contributor_repo_init(github: &GitHubApi, upstream_repo: &GitHubRepo) -> GitHubRepo {
     match github.get_user_fork(&upstream_repo).await {
-        Ok(fork) => {
-            match fork {
-                Some(fork) => {
-                    println!("You have forked the upstream repository: {}", upstream_repo.get_full_name());
-                    println!("Your fork repo have the name: {}", fork.get_full_name());
-                    print!("Do you want to use this forked repository as the contributor repository? (y/n) ");
+        Ok(fork) => match fork {
+            Some(fork) => {
+                println!(
+                    "You have forked the upstream repository: {}",
+                    upstream_repo.get_full_name()
+                );
+                println!("Your fork repo have the name: {}", fork.get_full_name());
+                print!("Do you want to use this forked repository as the contributor repository? (y/n) ");
 
-                    let mut user_input = String::new();
-                    let _ = stdout().flush();
-                    stdin().read_line(&mut user_input).unwrap_or(0);
+                let mut user_input = String::new();
+                let _ = stdout().flush();
+                stdin().read_line(&mut user_input).unwrap_or(0);
 
-                    match user_input.to_lowercase().trim() {
-                        "y" | "yes" => {
-                            fork
-                        }
-                        _ => {
-                            create_fork(github, upstream_repo).await
-                        }
-                    }
-                }
-                None => {
-                    println!("You don't have a fork of the upstream repository: {}", upstream_repo.get_full_name());
-                    create_fork(github, upstream_repo).await
+                match user_input.to_lowercase().trim() {
+                    "y" | "yes" => fork,
+                    _ => create_fork(github, upstream_repo).await,
                 }
             }
-        }
+            None => {
+                println!(
+                    "You don't have a fork of the upstream repository: {}",
+                    upstream_repo.get_full_name()
+                );
+                create_fork(github, upstream_repo).await
+            }
+        },
         Err(e) => {
-            eprintln!("Failed to get the user's fork of the upstream repository: {:?}", e);
+            eprintln!(
+                "Failed to get the user's fork of the upstream repository: {:?}",
+                e
+            );
             std::process::exit(1);
         }
     }
+}
+
+fn show_menu() {
+    println!("Please enter the corresponding number to select the project you want to work on,");
+    println!("\t1. FOSScope/Articles - 开源观察原创文章与中文文章转载项目");
+    println!("\t2. FOSScope/TranslateProject - 开源观察翻译项目");
+    println!("Or enter the following letters to execute the corresponding action.");
+    println!("\tQ: Quit the program");
+    print!("IN: ");
+    stdout().flush().unwrap();
 }
 
 #[tokio::main]
@@ -221,52 +238,23 @@ async fn main() {
         }
     };
 
-    println!("Please select the upstream repository you want to work with:");
-    println!("1. FOSScope/Articles - 开源观察原创文章与中文转载文章源文件");
-    println!("2. FOSScope/TranslateProject - 开源观察翻译项目");
-
     let mut user_input = String::new();
-    let mut valid_input = false;
-    let mut upstream_repo: GitHubRepo = GitHubRepo::new("".to_string(), "".to_string());
-    while !valid_input {
+    let mut project: workflow::Project;
+    loop {
+        show_menu();
         stdin().read_line(&mut user_input).unwrap_or(0);
-        upstream_repo = match user_input.trim() {
-            "1" => {
-                user_input.clear();
-                eprintln!("Not implemented yet. Please select another option.");
-                continue
-            }
-            "2" => {
-                valid_input = true;
-                GitHubRepo::new("FOSScope".to_string(), "TranslateProject".to_string())
-            }
+        project = match user_input.to_uppercase().trim() {
+            // Project Selection
+            "1" => workflow::Project::Articles,
+            "2" => workflow::Project::TranslateProject,
+            // Commands Selection
+            "Q" => std::process::exit(0),
             _ => {
-                user_input.clear();
                 eprintln!("Invalid input. Please select an option from the list.");
-                continue
+                workflow::Project::NONE
             }
-        }
+        };
+        user_input.clear();
+        project.start(&mut config, &github).await;
     }
-    user_input.clear();
-
-    if upstream_repo.owner.is_empty() || upstream_repo.name.is_empty() {
-        eprintln!("Invalid upstream repository.");
-        std::process::exit(1);
-    }
-
-    let contributor_repo = match config.get_contributor_repo(&upstream_repo) {
-        Some(contributor_repo) => contributor_repo,
-        None => {
-            let contributor_repo = contributor_repo_init(&github, &upstream_repo).await;
-            match config.set_contributor_repo(&upstream_repo, contributor_repo.clone()) {
-                Ok(_) => {
-                    contributor_repo
-                }
-                Err(e) => {
-                    eprintln!("Error setting contributor repo: {:?}", e);
-                    std::process::exit(1);
-                }
-            }
-        }
-    };
 }
