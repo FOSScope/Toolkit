@@ -28,12 +28,12 @@ async fn login() -> Result<GitHubApi, GitHubLoginError> {
             let mut user_input = String::new();
             user_input.clear();
             print!("Please enter your GitHub username: ");
-            let _ = stdout().flush();
+            stdout().flush().unwrap();
             stdin().read_line(&mut user_input).unwrap_or(0);
             let username = user_input.trim().to_string();
             user_input.clear();
             print!("Please enter your GitHub personal access token: ");
-            let _ = stdout().flush();
+            stdout().flush().unwrap();
             stdin().read_line(&mut user_input).unwrap_or(0);
             let token = user_input.trim().to_string();
 
@@ -96,7 +96,7 @@ async fn fork_creation_process(
 ) -> Option<GitHubRepo> {
     print!("Do you want to use another fork or create a new fork? (y/n) ");
     let mut user_input = String::new();
-    let _ = stdout().flush();
+    stdout().flush().unwrap();
     stdin().read_line(&mut user_input).unwrap_or(0);
     match user_input.to_lowercase().trim() {
         "y" | "yes" => {
@@ -140,8 +140,9 @@ async fn fork_creation_process(
                         fork_repo.get_full_name()
                     );
                     print!("Do you want to use this forked repository as the contributor repository? (y/n) ");
+                    stdout().flush().unwrap();
+
                     let mut user_input = String::new();
-                    let _ = stdout().flush();
                     stdin().read_line(&mut user_input).unwrap_or(0);
                     match user_input.to_lowercase().trim() {
                         "y" | "yes" => Some(fork_repo),
@@ -183,11 +184,10 @@ async fn contributor_repo_init(github: &GitHubApi, upstream_repo: &GitHubRepo) -
                 );
                 println!("Your fork repo have the name: {}", fork.get_full_name());
                 print!("Do you want to use this forked repository as the contributor repository? (y/n) ");
+                stdout().flush().unwrap();
 
                 let mut user_input = String::new();
-                let _ = stdout().flush();
                 stdin().read_line(&mut user_input).unwrap_or(0);
-
                 match user_input.to_lowercase().trim() {
                     "y" | "yes" => fork,
                     _ => create_fork(github, upstream_repo).await,
@@ -212,11 +212,13 @@ async fn contributor_repo_init(github: &GitHubApi, upstream_repo: &GitHubRepo) -
 }
 
 fn show_menu() {
-    println!("Please enter the corresponding number to select the project you want to work on,");
-    println!("\t1. FOSScope/Articles - 开源观察原创文章与中文文章转载项目");
-    println!("\t2. FOSScope/TranslateProject - 开源观察翻译项目");
-    println!("Or enter the following letters to execute the corresponding action.");
-    println!("\tQ: Quit the program");
+    println!(
+        r#"Please enter the corresponding number to select the project you want to work on,
+    1. FOSScope/Articles - 开源观察原创文章与中文文章转载项目
+    2. FOSScope/TranslateProject - 开源观察翻译项目
+or enter the following letters to execute the corresponding action.
+    Q: Quit the program"#
+    );
     print!("IN: ");
     stdout().flush().unwrap();
 }

@@ -24,7 +24,8 @@ This project is developed with Tauri, with Rust as the backend, and React + Type
 
 Run `cargo tauri dev` to start the frontend and backend automatically.
 
-You can also start the frontend with `npm run dev`, then start the backend and the program window by running the Rust target `fosscopetoolkit`.
+You can also start the frontend with `npm run dev`, then start the backend and the program window by running the Rust
+target `fosscopetoolkit`.
 
 ### File Structure
 
@@ -32,9 +33,10 @@ You can also start the frontend with `npm run dev`, then start the backend and t
 - `public`：Frontend static resources
 - `src`：Frontend source code, based on Vite, written in React + TypeScript
 - `src-rust`：All Rust source code
-  - `tauri-backend`：Tauri backend code, (the `src-tauri` directory in the default template)
-  - `toolkit-core`：Core library for providing core and basic functionalities
-  - `toolkit-cli`：Command-line version of FOSScope Toolkit, can be released separately, or used for testing core functionalities when the frontend is not fully developed
+    - `tauri-backend`：Tauri backend code, (the `src-tauri` directory in the default template)
+    - `toolkit-core`：Core library for providing core and basic functionalities
+    - `toolkit-cli`：Command-line version of FOSScope Toolkit, can be released separately, or used for testing core
+      functionalities when the frontend is not fully developed
 
 ## Contributors
 

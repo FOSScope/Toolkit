@@ -39,9 +39,9 @@ fn setup_octocrab(uri: &str) -> Octocrab {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use fosscopetoolkit_core::apis::GitHubApi;
     use fosscopetoolkit_core::models::{github_api_responses, GitHubRepo};
-    use super::*;
 
     #[tokio::test]
     async fn get_latest_commit_sha() {
@@ -76,7 +76,7 @@ mod tests {
                 owner: "octocat".to_string(),
                 name: "Hello-World".to_string(),
             },
-            "README.md"
+            "README.md",
         ).await.unwrap();
 
         match result {
@@ -105,7 +105,7 @@ mod tests {
                 owner: "octocat".to_string(),
                 name: "Hello-World".to_string(),
             },
-            "src"
+            "src",
         ).await.unwrap();
 
         match result {

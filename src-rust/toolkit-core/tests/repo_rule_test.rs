@@ -44,8 +44,8 @@ mod tests {
     use octocrab::models::repos::Content;
 
     use fosscopetoolkit_core::apis::GitHubApi;
+    use fosscopetoolkit_core::models::repo_rule::{get_repo_rule, Article, GitRule};
     use fosscopetoolkit_core::models::GitHubRepo;
-    use fosscopetoolkit_core::models::repo_rule::{Article, get_repo_rule, GitRule};
     use fosscopetoolkit_core::models::RepoRule;
 
     use super::*;

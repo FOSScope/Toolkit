@@ -1,6 +1,6 @@
+use crate::models::GitHubRepo;
 use octocrab::models::Repository;
 use octocrab::Octocrab;
-use crate::models::GitHubRepo;
 
 /// Possible errors that can occur when creating a fork of the upstream repository.
 pub enum ForkCreationError {

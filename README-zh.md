@@ -32,9 +32,9 @@
 - `public`：前端静态资源
 - `src`：前端源码，基于 Vite，使用 React + TypeScript 编写
 - `src-rust`：所有相关的 Rust 源码
-  - `tauri-backend`：Tauri 后端代码，即为默认生成模板中的 `src-tauri` 目录
-  - `toolkit-core`：核心库，用于提供核心与基础功能的实现
-  - `toolkit-cli`：命令行版本的 FOSScope Toolkit，可以单独发布，也可用于在前端未开发完毕的情况下测试核心功能
+    - `tauri-backend`：Tauri 后端代码，即为默认生成模板中的 `src-tauri` 目录
+    - `toolkit-core`：核心库，用于提供核心与基础功能的实现
+    - `toolkit-cli`：命令行版本的 FOSScope Toolkit，可以单独发布，也可用于在前端未开发完毕的情况下测试核心功能
 
 ## 贡献者
 

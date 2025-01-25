@@ -1,9 +1,9 @@
+use crate::models::GitHubRepo;
 use std::collections::HashMap;
 use std::fs;
 use std::fs::File;
 use std::io::{stdin, stdout, BufReader, Write};
 use std::path::Path;
-use crate::models::GitHubRepo;
 
 /* ----------------- Configuration Data Structure ----------------- */
 
@@ -49,7 +49,7 @@ impl Config {
     ///     - Ok(()): The contributor repository was successfully set and the configuration updated.
     ///     - Err(ConfigCreationLoadError): Reason why the contributor repository could not be set.
     pub fn set_contributor_repo(
-        &mut self, upstream: &GitHubRepo, contributor: GitHubRepo
+        &mut self, upstream: &GitHubRepo, contributor: GitHubRepo,
     ) -> Result<(), ConfigCreationLoadError> {
         self.contributor_repos.insert(upstream.get_full_name(), contributor);
         self.write_config()
@@ -76,7 +76,7 @@ impl Config {
                     Ok(_) => Ok(()),
                     Err(_) => Err(ConfigCreationLoadError::FileWriteError),
                 }
-            },
+            }
             Err(_) => Err(ConfigCreationLoadError::SerializeFailed),
         }
     }
