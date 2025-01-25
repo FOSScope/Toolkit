@@ -8,3 +8,4 @@ mod github_repo;
 mod html_filter_rule;
 pub mod repo_rule;
 pub mod supported_website;
+pub mod supported_websites;

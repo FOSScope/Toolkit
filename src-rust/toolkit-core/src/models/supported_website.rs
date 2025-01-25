@@ -1,3 +1,6 @@
+use crate::models::article_metadata::AuthorMetadata;
+use crate::models::supported_websites;
+
 /// An enum representing all the websites supported by the toolkit.
 ///
 /// Each supported variant contains two strings:
@@ -28,6 +31,26 @@ impl SupportedWebsite {
         match self {
             SupportedWebsite::Itsfoss(_, path) => Some(path.to_string()),
             SupportedWebsite::NewsItsfoss(_, path) => Some(path.to_string()),
+            SupportedWebsite::NotSupported => None,
+        }
+    }
+
+    /// Get the author metadata by extracting it from the HTML content of the given URL.
+    ///
+    /// # Current Supported Websites:
+    /// - `itsfoss.com`
+    /// - `news.itsfoss.com`
+    ///
+    /// # Arguments
+    /// - `html`: The HTML content of the page to get the author metadata from.
+    ///
+    /// # Returns
+    /// - Option<AuthorMetadata>: The metadata of the author of the article.
+    ///     `None` if the website is not supported or the author metadata cannot be extracted.
+    pub fn get_author_metadata(&self, html: &str) -> Option<AuthorMetadata> {
+        match self {
+            SupportedWebsite::Itsfoss(_, _) => supported_websites::Itsfoss::get_author_metadata(self, html),
+            SupportedWebsite::NewsItsfoss(_, _) => supported_websites::NewsItsfoss::get_author_metadata(self, html),
             SupportedWebsite::NotSupported => None,
         }
     }
