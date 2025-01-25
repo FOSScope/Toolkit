@@ -128,9 +128,9 @@ pub async fn get_repo_rule(repo: &GitHubRepo, api: &GitHubApi) -> Result<RepoRul
             let deserialized: Result<RepoRule, _> = toml::from_str(&rule);
             match deserialized {
                 Ok(rule) => Ok(rule),
-                Err(err) => Err(format!(
+                Err(e) => Err(format!(
                     "Failed to deserialize the repository rule: {}",
-                    err
+                    e
                 )),
             }
         }
