@@ -24,6 +24,62 @@ impl Config {
             contributor_repos: HashMap::new(),
         }
     }
+
+    /// Get the contributor repository for an upstream repository.
+    ///
+    /// # Arguments
+    /// - `config`: The configuration to get the contributor repository from.
+    /// - `upstream`: The upstream repository to get the contributor repository for.
+    ///
+    /// # Returns
+    /// - Option<GitHubRepo>: The contributor repository for the upstream repository, if it exists.
+    pub fn get_contributor_repo(&self, upstream: &GitHubRepo) -> Option<GitHubRepo> {
+        self.contributor_repos.get(&upstream.get_full_name()).cloned()
+    }
+
+    /// Set the contributor repository for an upstream repository, and update the configuration file.
+    ///
+    /// # Arguments
+    /// - `config`: The configuration to update.
+    /// - `upstream`: The upstream repository to set the contributor repository for.
+    /// - `contributor`: The contributor repository to set.
+    ///
+    /// # Returns
+    /// - Result<(), ConfigCreationLoadError>:
+    ///     - Ok(()): The contributor repository was successfully set and the configuration updated.
+    ///     - Err(ConfigCreationLoadError): Reason why the contributor repository could not be set.
+    pub fn set_contributor_repo(
+        &mut self, upstream: &GitHubRepo, contributor: GitHubRepo
+    ) -> Result<(), ConfigCreationLoadError> {
+        self.contributor_repos.insert(upstream.get_full_name(), contributor);
+        self.write_config()
+    }
+
+    /// Write the configuration to the config file (`.fosscope_toolkit/config.json`).
+    ///
+    /// # Arguments
+    /// - `config`: The configuration to write to the file.
+    ///
+    /// # Returns
+    /// - Result<(), ConfigCreationLoadError>:
+    ///     - Ok(()): The configuration was successfully written to the file.
+    ///     - Err(ConfigCreationLoadError): Reason why the configuration could not be written.
+    pub fn write_config(&self) -> Result<(), ConfigCreationLoadError> {
+        let config_json = serde_json::to_string(self);
+        match config_json {
+            Ok(config_json) => {
+                let file = File::create(".fosscope_toolkit/config.json");
+                if file.is_err() {
+                    return Err(ConfigCreationLoadError::FileCreateError);
+                }
+                match file.unwrap().write_all(config_json.as_bytes()) {
+                    Ok(_) => Ok(()),
+                    Err(_) => Err(ConfigCreationLoadError::FileWriteError),
+                }
+            },
+            Err(_) => Err(ConfigCreationLoadError::SerializeFailed),
+        }
+    }
 }
 
 /* ----------------- Other Utility Functions ----------------- */
@@ -41,32 +97,6 @@ pub enum ConfigCreationLoadError {
     ParseError,
     /// Error when serializing the configuration to JSON.
     SerializeFailed,
-}
-
-/// Write the configuration to the config file (`.fosscope_toolkit/config.json`).
-///
-/// # Arguments
-/// - `config`: The configuration to write to the file.
-///
-/// # Returns
-/// - Result<(), ConfigCreationLoadError>:
-///     - Ok(()): The configuration was successfully written to the file.
-///     - Err(ConfigCreationLoadError): Reason why the configuration could not be written.
-pub fn write_config(config: &Config) -> Result<(), ConfigCreationLoadError> {
-    let config_json = serde_json::to_string(&config);
-    match config_json {
-        Ok(config_json) => {
-            let file = File::create(".fosscope_toolkit/config.json");
-            if file.is_err() {
-                return Err(ConfigCreationLoadError::FileCreateError);
-            }
-            match file.unwrap().write_all(config_json.as_bytes()) {
-                Ok(_) => Ok(()),
-                Err(_) => Err(ConfigCreationLoadError::FileWriteError),
-            }
-        },
-        Err(_) => Err(ConfigCreationLoadError::SerializeFailed),
-    }
 }
 
 /// Load the configuration from the config file (`.fosscope_toolkit/config.json`).
@@ -120,7 +150,7 @@ pub fn config_process() -> Result<Config, ConfigCreationLoadError> {
 
         // Create a new configuration.
         let config = Config::new(editor);
-        match write_config(&config) {
+        match config.write_config() {
             Ok(_) => Ok(config),
             Err(e) => Err(e),
         }
@@ -128,34 +158,4 @@ pub fn config_process() -> Result<Config, ConfigCreationLoadError> {
         // If the config file exists, load the configuration from it.
         get_config()
     }
-}
-
-/// Get the contributor repository for an upstream repository.
-///
-/// # Arguments
-/// - `config`: The configuration to get the contributor repository from.
-/// - `upstream`: The upstream repository to get the contributor repository for.
-///
-/// # Returns
-/// - Option<GitHubRepo>: The contributor repository for the upstream repository, if it exists.
-pub fn get_contributor_repo(config: &Config, upstream: &GitHubRepo) -> Option<GitHubRepo> {
-    config.contributor_repos.get(&upstream.get_full_name()).cloned()
-}
-
-/// Set the contributor repository for an upstream repository, and update the configuration file.
-///
-/// # Arguments
-/// - `config`: The configuration to update.
-/// - `upstream`: The upstream repository to set the contributor repository for.
-/// - `contributor`: The contributor repository to set.
-///
-/// # Returns
-/// - Result<(), ConfigCreationLoadError>:
-///     - Ok(()): The contributor repository was successfully set and the configuration updated.
-///     - Err(ConfigCreationLoadError): Reason why the contributor repository could not be set.
-pub fn set_contributor_repo(
-    config: &mut Config, upstream: &GitHubRepo, contributor: GitHubRepo
-) -> Result<(), ConfigCreationLoadError> {
-    config.contributor_repos.insert(upstream.get_full_name(), contributor);
-    write_config(config)
 }

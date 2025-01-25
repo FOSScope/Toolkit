@@ -1,7 +1,7 @@
 use std::io::{stdin, stdout, Write};
 use fosscopetoolkit_core::apis::github_api::RepoUpstreamValidationError;
 use fosscopetoolkit_core::apis::GitHubApi;
-use fosscopetoolkit_core::config::config;
+use fosscopetoolkit_core::config::config::config_process;
 use fosscopetoolkit_core::config::github::GitHubAccount;
 use fosscopetoolkit_core::models::GitHubRepo;
 use fosscopetoolkit_core::utils::github::github_login::{github_login, GitHubLoginError};
@@ -206,7 +206,7 @@ async fn contributor_repo_init(github: &GitHubApi, upstream_repo: &GitHubRepo) -
 
 #[tokio::main]
 async fn main() {
-    let config = config::config_process();
+    let config = config_process();
     if config.is_err() {
         eprintln!("Error creating/loading config: {:?}", config.err().unwrap());
         std::process::exit(1);
@@ -254,11 +254,11 @@ async fn main() {
         std::process::exit(1);
     }
 
-    let contributor_repo = match config::get_contributor_repo(&config, &upstream_repo) {
+    let contributor_repo = match config.get_contributor_repo(&upstream_repo) {
         Some(contributor_repo) => contributor_repo,
         None => {
             let contributor_repo = contributor_repo_init(&github, &upstream_repo).await;
-            match config::set_contributor_repo(&mut config, &upstream_repo, contributor_repo.clone()) {
+            match config.set_contributor_repo(&upstream_repo, contributor_repo.clone()) {
                 Ok(_) => {
                     contributor_repo
                 }
