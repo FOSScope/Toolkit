@@ -59,7 +59,10 @@ impl Project {
                         _ => TranslateProjectAction::Invalid,
                     };
                     user_input.clear();
-                    if action.perform().await {
+                    if action
+                        .perform(github, &upstream_repo, &contributor_repo)
+                        .await
+                    {
                         break;
                     }
                 }

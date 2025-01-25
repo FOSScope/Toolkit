@@ -29,7 +29,8 @@ async fn setup_api(template: ResponseTemplate) -> MockServer {
     setup_error_handler(
         &mock_server,
         &format!("GET on {mocked_path} was not received"),
-    ).await;
+    )
+    .await;
 
     mock_server
 }

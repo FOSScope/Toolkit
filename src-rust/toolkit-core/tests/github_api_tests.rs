@@ -27,7 +27,8 @@ async fn setup_api(template: ResponseTemplate, mocked_path: &str) -> MockServer 
     setup_error_handler(
         &mock_server,
         &format!("GET on {mocked_path} was not received"),
-    ).await;
+    )
+    .await;
 
     mock_server
 }
@@ -52,12 +53,13 @@ mod tests {
         let client = setup_octocrab(&mock_server.uri());
 
         let github = GitHubApi::new("octocat".to_string(), client);
-        let result = github.get_latest_commit_sha(
-            &GitHubRepo {
+        let result = github
+            .get_latest_commit_sha(&GitHubRepo {
                 owner: "octocat".to_string(),
                 name: "Hello-World".to_string(),
-            },
-        ).await.unwrap();
+            })
+            .await
+            .unwrap();
 
         assert_eq!(result, "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d");
     }
@@ -67,17 +69,21 @@ mod tests {
         let mocked_response: github_api_responses::repository_content::RepositoryContent =
             serde_json::from_str(include_str!("resources/repo_content_file.json")).unwrap();
         let template = ResponseTemplate::new(200).set_body_json(&mocked_response);
-        let mock_server = setup_api(template, "/repos/octocat/Hello-World/contents/README.md").await;
+        let mock_server =
+            setup_api(template, "/repos/octocat/Hello-World/contents/README.md").await;
         let client = setup_octocrab(&mock_server.uri());
 
         let github = GitHubApi::new("octocat".to_string(), client);
-        let result = github.get_contents(
-            &GitHubRepo {
-                owner: "octocat".to_string(),
-                name: "Hello-World".to_string(),
-            },
-            "README.md",
-        ).await.unwrap();
+        let result = github
+            .get_contents(
+                &GitHubRepo {
+                    owner: "octocat".to_string(),
+                    name: "Hello-World".to_string(),
+                },
+                "README.md",
+            )
+            .await
+            .unwrap();
 
         match result {
             github_api_responses::repository_content::RepositoryContent::File(content) => {
@@ -100,13 +106,16 @@ mod tests {
         let client = setup_octocrab(&mock_server.uri());
 
         let github = GitHubApi::new("octocat".to_string(), client);
-        let result = github.get_contents(
-            &GitHubRepo {
-                owner: "octocat".to_string(),
-                name: "Hello-World".to_string(),
-            },
-            "src",
-        ).await.unwrap();
+        let result = github
+            .get_contents(
+                &GitHubRepo {
+                    owner: "octocat".to_string(),
+                    name: "Hello-World".to_string(),
+                },
+                "src",
+            )
+            .await
+            .unwrap();
 
         match result {
             github_api_responses::repository_content::RepositoryContent::File(_) => {
@@ -143,16 +152,16 @@ mod tests {
 
     #[tokio::test]
     async fn get_all_repo_file_content() {
-        let octocrab = Octocrab::builder()
-            .build().unwrap();
+        let octocrab = Octocrab::builder().build().unwrap();
         let github = GitHubApi::new("octocat".to_string(), octocrab);
 
-        let result = github.get_all_file_contents_in_repo(
-            &GitHubRepo {
+        let result = github
+            .get_all_file_contents_in_repo(&GitHubRepo {
                 owner: "octocat".to_string(),
                 name: "octocat.github.io".to_string(),
-            }
-        ).await.unwrap();
+            })
+            .await
+            .unwrap();
 
         for content in result {
             match content {

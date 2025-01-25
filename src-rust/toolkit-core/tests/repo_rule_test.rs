@@ -29,7 +29,8 @@ async fn setup_api(template: ResponseTemplate) -> MockServer {
     setup_error_handler(
         &mock_server,
         &format!("GET on {mocked_path} was not received"),
-    ).await;
+    )
+    .await;
 
     mock_server
 }
@@ -65,7 +66,8 @@ mod tests {
                 name: "TranslateProject".to_string(),
             },
             &github,
-        ).await;
+        )
+        .await;
         assert!(rule.is_ok());
 
         let template: String = r#"---
@@ -101,11 +103,30 @@ authorInfo: |
 {{content}}
 "#.to_string();
 
-        let news: Article = Article::new("news".to_string(), "新闻".to_string(), "{{step}}/news".to_string(), None);
-        let tech: Article = Article::new("tech".to_string(), "技术".to_string(), "{{step}}/tech".to_string(), None);
-        let talk: Article = Article::new("talk".to_string(), "评论".to_string(), "{{step}}/talk".to_string(), None);
+        let news: Article = Article::new(
+            "news".to_string(),
+            "新闻".to_string(),
+            "{{step}}/news".to_string(),
+            None,
+        );
+        let tech: Article = Article::new(
+            "tech".to_string(),
+            "技术".to_string(),
+            "{{step}}/tech".to_string(),
+            None,
+        );
+        let talk: Article = Article::new(
+            "talk".to_string(),
+            "评论".to_string(),
+            "{{step}}/talk".to_string(),
+            None,
+        );
 
-        let git_rule: GitRule = GitRule::new("main".to_string(), "{{action_name}}/{{type_name}}/{{article_id}}".to_string(), "[{{action_desc}}][{{type_desc}}] {{article_title}}".to_string());
+        let git_rule: GitRule = GitRule::new(
+            "main".to_string(),
+            "{{action_name}}/{{type_name}}/{{article_id}}".to_string(),
+            "[{{action_desc}}][{{type_desc}}] {{article_title}}".to_string(),
+        );
 
         let expected = RepoRule::new(template, vec![news, tech, talk], git_rule);
 

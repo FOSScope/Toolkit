@@ -29,7 +29,8 @@ async fn setup_api(template: ResponseTemplate) -> MockServer {
     setup_error_handler(
         &mock_server,
         &format!("GET on {mocked_path} was not received"),
-    ).await;
+    )
+    .await;
 
     mock_server
 }
@@ -57,16 +58,18 @@ mod tests {
         let client = setup_octocrab(&mock_server.uri());
 
         let github = GitHubApi::new("octocat".to_string(), client);
-        let result = github.validate_repo(
-            GitHubRepo {
-                owner: "someone".to_string(),
-                name: "Hello-World".to_string(),
-            },
-            GitHubRepo {
-                owner: "upstream".to_string(),
-                name: "Hello-World".to_string(),
-            },
-        ).await;
+        let result = github
+            .validate_repo(
+                GitHubRepo {
+                    owner: "someone".to_string(),
+                    name: "Hello-World".to_string(),
+                },
+                GitHubRepo {
+                    owner: "upstream".to_string(),
+                    name: "Hello-World".to_string(),
+                },
+            )
+            .await;
 
         assert_eq!(result, Err("Repository does not exist"));
     }
@@ -80,16 +83,18 @@ mod tests {
         let client = setup_octocrab(&mock_server.uri());
 
         let github = GitHubApi::new("octocat".to_string(), client);
-        let result = github.validate_repo(
-            GitHubRepo {
-                owner: "octocat".to_string(),
-                name: "Hello-World".to_string(),
-            },
-            GitHubRepo {
-                owner: "upstream".to_string(),
-                name: "Hello-World".to_string(),
-            },
-        ).await;
+        let result = github
+            .validate_repo(
+                GitHubRepo {
+                    owner: "octocat".to_string(),
+                    name: "Hello-World".to_string(),
+                },
+                GitHubRepo {
+                    owner: "upstream".to_string(),
+                    name: "Hello-World".to_string(),
+                },
+            )
+            .await;
 
         assert_eq!(result, Err("Repository is not a fork"));
     }
@@ -103,18 +108,23 @@ mod tests {
         let client = setup_octocrab(&mock_server.uri());
 
         let github = GitHubApi::new("octocat".to_string(), client);
-        let result = github.validate_repo(
-            GitHubRepo {
-                owner: "octocat".to_string(),
-                name: "Hello-World".to_string(),
-            },
-            GitHubRepo {
-                owner: "upstream".to_string(),
-                name: "Hello-World".to_string(),
-            },
-        ).await;
+        let result = github
+            .validate_repo(
+                GitHubRepo {
+                    owner: "octocat".to_string(),
+                    name: "Hello-World".to_string(),
+                },
+                GitHubRepo {
+                    owner: "upstream".to_string(),
+                    name: "Hello-World".to_string(),
+                },
+            )
+            .await;
 
-        assert_eq!(result, Err("Repository is not a fork of the upstream repository"));
+        assert_eq!(
+            result,
+            Err("Repository is not a fork of the upstream repository")
+        );
     }
 
     #[tokio::test]
@@ -126,16 +136,18 @@ mod tests {
         let client = setup_octocrab(&mock_server.uri());
 
         let github = GitHubApi::new("octocat".to_string(), client);
-        let result = github.validate_repo(
-            GitHubRepo {
-                owner: "octocat".to_string(),
-                name: "Hello-World".to_string(),
-            },
-            GitHubRepo {
-                owner: "upstream".to_string(),
-                name: "Hello-World".to_string(),
-            },
-        ).await;
+        let result = github
+            .validate_repo(
+                GitHubRepo {
+                    owner: "octocat".to_string(),
+                    name: "Hello-World".to_string(),
+                },
+                GitHubRepo {
+                    owner: "upstream".to_string(),
+                    name: "Hello-World".to_string(),
+                },
+            )
+            .await;
 
         assert_eq!(result, Ok(()));
     }

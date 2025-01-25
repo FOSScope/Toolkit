@@ -46,7 +46,8 @@ async fn setup_api(template: ResponseTemplate, request_type: RequestType) -> Moc
     setup_error_handler(
         &mock_server,
         &format!("GET on {mocked_path} was not received"),
-    ).await;
+    )
+    .await;
 
     mock_server
 }
@@ -74,12 +75,12 @@ mod tests {
         let client = setup_octocrab(&mock_server.uri());
 
         let github = GitHubApi::new("FOSScope".to_string(), client);
-        let result = github.get_forks(
-            GitHubRepo {
+        let result = github
+            .get_forks(GitHubRepo {
                 owner: "octocat".to_string(),
                 name: "Hello-World".to_string(),
-            }
-        ).await;
+            })
+            .await;
 
         assert_eq!(result.len(), 30);
     }
@@ -93,12 +94,12 @@ mod tests {
         let client = setup_octocrab(&mock_server.uri());
 
         let github = GitHubApi::new("octocat".to_string(), client);
-        let result = github.get_user_fork(
-            GitHubRepo {
+        let result = github
+            .get_user_fork(GitHubRepo {
                 owner: "octocat".to_string(),
                 name: "Hello-World".to_string(),
-            }
-        ).await;
+            })
+            .await;
 
         assert_eq!(result, Err("User has not forked the upstream repository."));
     }
@@ -112,17 +113,20 @@ mod tests {
         let client = setup_octocrab(&mock_server.uri());
 
         let github = GitHubApi::new("FOSScope".to_string(), client);
-        let result = github.get_user_fork(
-            GitHubRepo {
+        let result = github
+            .get_user_fork(GitHubRepo {
                 owner: "octocat".to_string(),
                 name: "Hello-World".to_string(),
-            }
-        ).await;
+            })
+            .await;
 
-        assert_eq!(result, Ok(GitHubRepo {
-            owner: "FOSScope".to_string(),
-            name: "Hello-World".to_string(),
-        }));
+        assert_eq!(
+            result,
+            Ok(GitHubRepo {
+                owner: "FOSScope".to_string(),
+                name: "Hello-World".to_string(),
+            })
+        );
     }
 
     #[tokio::test]
@@ -134,20 +138,25 @@ mod tests {
         let client = setup_octocrab(&mock_server.uri());
 
         let github = GitHubApi::new("octocat".to_string(), client);
-        let result = github.create_fork(
-            GitHubRepo {
+        let result = github
+            .create_fork(
+                GitHubRepo {
+                    owner: "FOSScope".to_string(),
+                    name: "Hello-World".to_string(),
+                },
+                GitHubRepo {
+                    owner: "octocat".to_string(),
+                    name: "Hello-World".to_string(),
+                },
+            )
+            .await;
+
+        assert_eq!(
+            result,
+            Ok(GitHubRepo {
                 owner: "FOSScope".to_string(),
                 name: "Hello-World".to_string(),
-            },
-            GitHubRepo {
-                owner: "octocat".to_string(),
-                name: "Hello-World".to_string(),
-            },
-        ).await;
-
-        assert_eq!(result, Ok(GitHubRepo {
-            owner: "FOSScope".to_string(),
-            name: "Hello-World".to_string(),
-        }));
+            })
+        );
     }
 }

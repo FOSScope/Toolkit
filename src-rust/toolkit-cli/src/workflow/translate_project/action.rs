@@ -1,3 +1,6 @@
+use crate::workflow::translate_project::actions;
+use fosscopetoolkit_core::apis::GitHubApi;
+use fosscopetoolkit_core::models::GitHubRepo;
 use std::io::Write;
 
 pub enum TranslateProjectAction {
@@ -12,9 +15,19 @@ pub enum TranslateProjectAction {
 impl TranslateProjectAction {
     /// Perform the selected action.
     ///
+    /// # Arguments
+    /// - `github`: The GitHub API to use for performing the GitHub related actions.
+    /// - `upstream_repo`: The upstream repository of the project.
+    /// - `contributor_repo`: The contributor repository for contributing to the project.
+    ///
     /// # Returns
     /// - bool: Whether the program should be back to the previous menu after action is performed.
-    pub async fn perform(&self) -> bool {
+    pub async fn perform(
+        &self,
+        github: &GitHubApi,
+        upstream_repo: &GitHubRepo,
+        contributor_repo: &GitHubRepo,
+    ) -> bool {
         match self {
             TranslateProjectAction::Select => {
                 println!("Selecting Article...");

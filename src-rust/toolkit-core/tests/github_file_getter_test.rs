@@ -29,7 +29,8 @@ async fn setup_api(template: ResponseTemplate) -> MockServer {
     setup_error_handler(
         &mock_server,
         &format!("GET on {mocked_path} was not received"),
-    ).await;
+    )
+    .await;
 
     mock_server
 }
@@ -57,13 +58,15 @@ mod tests {
         let client = setup_octocrab(&mock_server.uri());
 
         let github = GitHubApi::new("octocat".to_string(), client);
-        let file_content = github.get_file_content(
-            &GitHubRepo {
-                owner: "octocat".to_string(),
-                name: "Hello-World".to_string(),
-            },
-            "README",
-        ).await;
+        let file_content = github
+            .get_file_content(
+                &GitHubRepo {
+                    owner: "octocat".to_string(),
+                    name: "Hello-World".to_string(),
+                },
+                "README",
+            )
+            .await;
         assert!(file_content.is_ok());
         assert_eq!(file_content.unwrap().trim(), "Hello World!");
     }

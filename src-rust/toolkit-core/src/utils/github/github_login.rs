@@ -40,7 +40,9 @@ pub async fn github_login(github_account: &GitHubAccount) -> Result<GitHubApi, G
             let user_verification = github.verify_user().await;
             match user_verification {
                 Ok(true) => Ok(github),
-                Ok(false) => Err(GitHubLoginError::AuthenticationError("UsernameMismatch".to_string())),
+                Ok(false) => Err(GitHubLoginError::AuthenticationError(
+                    "UsernameMismatch".to_string(),
+                )),
                 Err(e) => Err(GitHubLoginError::AuthenticationError(e.to_string())),
             }
         }

@@ -25,7 +25,9 @@ pub enum GitHubApiError {
 impl std::fmt::Display for GitHubApiError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            GitHubApiError::UserGetFailed => write!(f, "Failed to get user information from GitHub API."),
+            GitHubApiError::UserGetFailed => {
+                write!(f, "Failed to get user information from GitHub API.")
+            }
         }
     }
 }
@@ -62,23 +64,34 @@ impl GitHubApi {
     /// - `Result<GitHubRepo, ForkCreationError>`:
     ///     - `Ok(GitHubRepo)`: The forked repository if successful.
     ///     - `Err(ForkCreationError)`: The error that occurred during the fork creation process.
-    pub async fn create_fork(&self, repo: &GitHubRepo, upstream: &GitHubRepo) -> Result<GitHubRepo, ForkCreationError> {
+    pub async fn create_fork(
+        &self,
+        repo: &GitHubRepo,
+        upstream: &GitHubRepo,
+    ) -> Result<GitHubRepo, ForkCreationError> {
         // Create a fork of the upstream repository using the information given.
-        let response = self.octocrab._post(
-            format!("/repos/{}/{}/forks", upstream.owner, upstream.name),
-            Some(&serde_json::json!({
-                "organization": repo.owner,
-                "name": repo.name,
-            })),
-        ).await;
+        let response = self
+            .octocrab
+            ._post(
+                format!("/repos/{}/{}/forks", upstream.owner, upstream.name),
+                Some(&serde_json::json!({
+                    "organization": repo.owner,
+                    "name": repo.name,
+                })),
+            )
+            .await;
 
         if response.is_err() {
-            return Err(ForkCreationError::ForkCreationFailed(response.unwrap_err().to_string()));
+            return Err(ForkCreationError::ForkCreationFailed(
+                response.unwrap_err().to_string(),
+            ));
         }
 
         let response_body = self.octocrab.body_to_string(response.unwrap()).await;
         if response_body.is_err() {
-            return Err(ForkCreationError::ForkResponseReadFailed(response_body.unwrap_err().to_string()));
+            return Err(ForkCreationError::ForkResponseReadFailed(
+                response_body.unwrap_err().to_string(),
+            ));
         }
 
         let json_response = serde_json::from_str(&*response_body.unwrap());
@@ -101,15 +114,24 @@ impl GitHubApi {
     /// - `Result<Vec<GitHubRepo>, ForkFetchingError>`:
     ///     - `Ok(Vec<GitHubRepo>)`: A list of [GitHubRepo](GitHubRepo) representing the forks of the upstream repository.
     ///     - `Err(ForkFetchingError)`: The error that occurred during the fork fetching process.
-    pub async fn get_forks(&self, upstream: &GitHubRepo) -> Result<Vec<GitHubRepo>, ForkFetchingError> {
+    pub async fn get_forks(
+        &self,
+        upstream: &GitHubRepo,
+    ) -> Result<Vec<GitHubRepo>, ForkFetchingError> {
         let mut forks = Vec::new();
         let mut page: u32 = 1;
 
         loop {
             // Get the forks of the upstream repository from the GitHub API page by page.
-            let response = match self.octocrab.repos(
-                upstream.owner.clone(), upstream.name.clone(),
-            ).list_forks().page(page).per_page(100).send().await {
+            let response = match self
+                .octocrab
+                .repos(upstream.owner.clone(), upstream.name.clone())
+                .list_forks()
+                .page(page)
+                .per_page(100)
+                .send()
+                .await
+            {
                 Ok(response) => response,
                 Err(e) => return Err(ForkFetchingError::ForkFetchingFailed(e.to_string())),
             };
@@ -122,9 +144,11 @@ impl GitHubApi {
             let next_page = response.next.clone();
 
             // Only include the owner and name of the forked repository.
-            forks.extend(response.into_iter().map(
-                |repo| GitHubRepo::new(repo.owner.unwrap().login, repo.name)
-            ));
+            forks.extend(
+                response
+                    .into_iter()
+                    .map(|repo| GitHubRepo::new(repo.owner.unwrap().login, repo.name)),
+            );
 
             // If there's no next page, break out of the loop.
             if next_page.is_none() {
@@ -164,7 +188,10 @@ impl GitHubApi {
     ///         - `Some(GitHubRepo)`: A [GitHubRepo](GitHubRepo) representing the user's fork of the upstream repository.
     ///         - `None`: If the currently signed in GitHub user does not have a fork of the upstream repository.
     ///     - `Err(ForkFetchingError)`: The error that occurred during the fork fetching process.
-    pub async fn get_user_fork(&self, upstream: &GitHubRepo) -> Result<Option<GitHubRepo>, ForkFetchingError> {
+    pub async fn get_user_fork(
+        &self,
+        upstream: &GitHubRepo,
+    ) -> Result<Option<GitHubRepo>, ForkFetchingError> {
         // Get all forks of the upstream repository.
         let forks = self.get_forks(upstream).await;
         match forks {
@@ -196,7 +223,11 @@ impl GitHubApi {
     ///     - `Err(RepoUpstreamValidationError::NotAForkOfUpstream)`: If the repository is not a fork of the provided upstream repository.
     ///     - `Err(RepoUpstreamValidationError::NotAFork)`: If the repository is not a fork.
     ///     - `Err(RepoUpstreamValidationError::DoNotExist)`: If the repository does not exist.
-    pub async fn validate_repo_upstream(&self, repo: &GitHubRepo, upstream: &GitHubRepo) -> Result<(), RepoUpstreamValidationError> {
+    pub async fn validate_repo_upstream(
+        &self,
+        repo: &GitHubRepo,
+        upstream: &GitHubRepo,
+    ) -> Result<(), RepoUpstreamValidationError> {
         // Get the repository information from the GitHub API.
         if let Ok(repo) = self.octocrab.repos(&repo.owner, &repo.name).get().await {
             if repo.fork.unwrap_or(false) {

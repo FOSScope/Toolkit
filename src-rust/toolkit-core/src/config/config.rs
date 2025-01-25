@@ -34,7 +34,9 @@ impl Config {
     /// # Returns
     /// - Option<GitHubRepo>: The contributor repository for the upstream repository, if it exists.
     pub fn get_contributor_repo(&self, upstream: &GitHubRepo) -> Option<GitHubRepo> {
-        self.contributor_repos.get(&upstream.get_full_name()).cloned()
+        self.contributor_repos
+            .get(&upstream.get_full_name())
+            .cloned()
     }
 
     /// Set the contributor repository for an upstream repository, and update the configuration file.
@@ -49,9 +51,12 @@ impl Config {
     ///     - Ok(()): The contributor repository was successfully set and the configuration updated.
     ///     - Err(ConfigCreationLoadError): Reason why the contributor repository could not be set.
     pub fn set_contributor_repo(
-        &mut self, upstream: &GitHubRepo, contributor: GitHubRepo,
+        &mut self,
+        upstream: &GitHubRepo,
+        contributor: GitHubRepo,
     ) -> Result<(), ConfigCreationLoadError> {
-        self.contributor_repos.insert(upstream.get_full_name(), contributor);
+        self.contributor_repos
+            .insert(upstream.get_full_name(), contributor);
         self.write_config()
     }
 
