@@ -2,6 +2,25 @@ use crate::models::GitHubRepo;
 use octocrab::models::Repository;
 use octocrab::Octocrab;
 
+/// Possible errors that can occur when getting the content of a file in a repository.
+pub enum FileContentGetError {
+    NoFileContentFound,
+    FileContentGetFailed(String),
+}
+
+impl std::fmt::Display for FileContentGetError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            FileContentGetError::NoFileContentFound => {
+                write!(f, "No content found for the file.")
+            }
+            FileContentGetError::FileContentGetFailed(e) => {
+                write!(f, "Failed to get content of the file: {}", e)
+            }
+        }
+    }
+}
+
 /// Possible errors that can occur when creating a fork of the upstream repository.
 pub enum ForkCreationError {
     ForkCreationFailed(String),
@@ -102,6 +121,33 @@ impl GitHubApi {
                 Ok(GitHubRepo::new(repo.owner.unwrap().login, repo.name))
             }
             Err(e) => Err(ForkCreationError::ForkResponseParseFailed(e.to_string())),
+        }
+    }
+
+    /// Get the **decoded** content of a file in a repository.
+    ///
+    /// # Arguments
+    /// - `repo`: The repository to get the file from.
+    /// - `path`: The path to the file in the repository.
+    ///
+    /// # Returns
+    /// - `Result<String, FileContentGetError>`
+    ///     - `Ok(String)`: The decoded content of the file.
+    ///     - `Err(FileContentGetError)`: The error that occurred during the file content fetching process.
+    pub async fn get_file_content(&self, repo: &GitHubRepo, path: &str) -> Result<String, FileContentGetError> {
+        let repo = self.octocrab.repos(repo.owner.clone(), repo.name.clone());
+        let content = repo.get_content().path(path).r#ref("main").send().await;
+        match content {
+            Ok(mut content) => {
+                let contents = content.take_items();
+                let c = &contents[0];
+                let decoded_content = c.decoded_content();
+                match decoded_content {
+                    Some(decoded_content) => Ok(decoded_content),
+                    None => Err(FileContentGetError::NoFileContentFound),
+                }
+            }
+            Err(e) => Err(FileContentGetError::FileContentGetFailed(e.to_string())),
         }
     }
 
